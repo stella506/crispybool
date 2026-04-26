@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Settings - Crispybool Investment</title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/dashboard-nav.css" />
+  <link rel="stylesheet" href="css/account-settings.css" />
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+ 
+  <script type="module" src="js/account-actions.js"></script>
+  
+
+  <!-- google translate script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+  <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
+
+  <header>
+     <div id="navbar-container"></div>
+
+<script type="module" src="js/dashboard-nav.js"></script>
+  </header>
+
+  <main class="dashboard">
+    <section class="dashboard-header">
+      <h1>Account Settings</h1>
+      <p>Edit your personal information and keep your account secure.</p>
+    </section>
+
+    <section class="card">
+      <h3>Logged in as <span id="userBadge"></span></h3>
+      <form id="settingsForm">
+        <div class="form-group">
+          <label for="settingsEmail">Email</label>
+          <input id="settingsEmail" type="email" required>
+        </div>
+        <div class="form-group">
+          <label for="settingsUsername">Username</label>
+          <input id="settingsUsername" type="text" required>
+        </div>
+        <button type="submit">Save Changes</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

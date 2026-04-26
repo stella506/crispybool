@@ -1,0 +1,2016 @@
+/* ===============================
+   LENIS SMOOTH SCROLLING
+==================================*/
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ===============================
+   GLOBAL RESET
+==================================*/
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* Fixes conflict with Lenis smooth scrolling */
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #fff;
+  line-height: 1.6;
+  color: #333;    
+  max-width: 100%;
+  overflow-wrap: break-word; /* FIX: Prevents long words/hashes from causing internal flex/grid blowouts */
+  word-wrap: break-word;
+  overflow-x: clip; /* Safely hides horizontal overflow without breaking window scroll */
+}
+
+/* google translate */
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* ===============================
+   NAVBAR (Desktop First)
+================================== */
+
+/* ===============================
+   HERO SECTION
+================================== */
+.hero-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 60px;
+  padding: 50px 5%;
+  background: linear-gradient(135deg, #d1af7e 30%, #6a040f 100%);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Sliding Images */
+.sliding {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 12px;
+}
+
+.sliding-photos {
+  display: flex;
+  width: 400%;
+  height: 100%;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.sliding-photos img {
+  width: 25%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Hero Content */
+.hero-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-mission,
+.hero-vision {
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid #ddd;
+  background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+
+
+.hero-mission h2,
+.hero-vision h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.hero-mission p,
+.hero-vision p {
+  font-size: 14px;
+  color: white;
+}
+
+/* ===============================
+   INVESTMENT SECTION
+================================== */
+.investment-section {
+  background: #f4f6f9;
+  padding: 50px 5%;
+  background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.investment-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.investment-header h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.investment-header p {
+  font-size: 14px;
+  color: white;
+}
+
+/* Cards Grid */
+.investment-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* Card */
+.investment-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: 0.3s ease;
+}
+
+.investment-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.investment-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.investment-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.investment-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+  font-family: "Inter", sans-serif;
+}
+
+
+.investment-card a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.investment-card a:hover {
+  background: #333;
+}
+
+/* investment plans */
+
+.investment-plans {
+  text-align: center;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: rgb(177, 165, 165); */
+  padding: 5px 20px;
+  background: linear-gradient(90deg, #352816 10%, #6a040f 100%);
+
+}
+
+
+
+
+
+.investment-plans .investment-plans-header h2 {
+  font-size: 25px;
+  margin-bottom: 10px;
+  color: white;
+  margin-top:10px;
+
+  
+}
+
+.investment-plans .investment-plans-header p {
+  font-size: 16px;
+  color: white;
+
+  
+}
+.investment-plans-cards .investment-plan-card ul li{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.investment-plans .investment-plans-cards{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+.investment-plans-cards .investment-plan-card {
+  background: linear-gradient( 135deg, #cebfc1 40%, #352816 100%);
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: 0.3s ease;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  color: black;
+  
+}
+
+.investment-plans-cards .investment-plan-card a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.3s ease;
+  margin-top: auto;
+  
+}
+
+.investment-plans-cards .investment-plan-card a:hover {
+  background: #333;
+}
+
+/* ===============================
+   WHAT WE DO SECTION
+================================== */
+.what-we-do {
+  background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+  padding: 40px 5%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.what-we-do::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(106, 4, 15, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(209, 175, 126, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* shared card style */
+.what-we-do .feature {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  animation: none; /* Remove old animation */
+}
+
+.what-we-do .feature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(106, 4, 15, 0.05) 0%, rgba(209, 175, 126, 0.05) 100%);
+  border-radius: 20px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.what-we-do .feature.animate {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.what-we-do .feature:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.what-we-do .feature:hover::before {
+  opacity: 1;
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #6a040f 0%, #d1af7e 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+  box-shadow: 0 8px 20px rgba(106, 4, 15, 0.3);
+  transition: all 0.3s ease;
+}
+
+.what-we-do .feature:hover .feature-icon {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(106, 4, 15, 0.4);
+}
+
+.what-we-do .feature h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #2d3748;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.what-we-do .feature h3::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #6a040f, #d1af7e);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.what-we-do .feature:hover h3::after {
+  width: 80px;
+}
+
+.what-we-do .feature p {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #4a5568;
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .what-we-do {
+    grid-template-columns: 1fr;
+    padding: 40px 5%;
+    gap: 25px;
+  }
+  
+  .what-we-do .feature {
+    padding: 30px 20px;
+  }
+  
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .what-we-do .feature h3 {
+    font-size: 18px;
+  }
+}
+
+/* ===============================
+   CERTIFICATE SECTION
+================================== */
+.crispybool-certificate {
+  padding: 80px 1%;
+  background: #f6f9fd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 700px;
+  width: 100%;
+}
+
+.certificate-container {
+  max-width: 800px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+  padding: 48px 40px;
+}
+
+/* Certification Badge */
+.certificate-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 12px 20px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 24px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.certificate-icon {
+  width: 24px;
+  height: 24px;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.badge-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #22c55e;
+  letter-spacing: 0.5px;
+}
+
+/* Certificate Content */
+.certificate-content h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.certificate-subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.certificate-description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #64748b;
+  margin-bottom: 40px;
+  font-family: "Inter", sans-serif;
+}
+
+/* Trust Indicators */
+.trust-indicators {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(203, 213, 225, 0.5);
+}
+
+.trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.trust-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+  color: #22c55e;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.trust-item span:last-child {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+/* Certificate CTA */
+.certificate-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.certificate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 40px;
+  /* background: linear-gradient(135deg, #1e293b 0%, #334155 100%); */
+  background-color: black;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(30, 41, 59, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.certificate-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #334155 0%, #475569 100%);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.certificate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(30, 41, 59, 0.3);
+}
+
+.certificate-btn:hover::before {
+  left: 0;
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.certificate-btn:hover .btn-icon {
+  transform: translateX(3px);
+}
+
+.certificate-footer {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 8px;
+}
+    
+
+
+
+
+
+/* ===============================
+   TESTIMONIALS SECTION
+================================== */
+.testimonials {
+  background: #fbfcfd;
+  padding: 80px 5%;
+  text-align: center;
+}
+
+.testimonials-header h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.testimonials-header p {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 50px;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  align-items: stretch;
+}
+
+/* card appearance + entrance animation */
+.testimonial-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.05);
+  border-top: 4px solid #6a040f;
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardFade 0.6s forwards ease-in-out;
+}
+.testimonials-grid .testimonial-card:nth-child(1) { animation-delay: 0.1s; }
+.testimonials-grid .testimonial-card:nth-child(2) { animation-delay: 0.2s; }
+.testimonials-grid .testimonial-card:nth-child(3) { animation-delay: 0.3s; }
+.testimonials-grid .testimonial-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes cardFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08), 0 20px 25px rgba(0, 0, 0, 0.05);
+}
+
+.stars {
+  color: #f59e0b;
+  font-size: 18px;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.testimonial-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.testimonial-content p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+  margin-bottom: 25px;
+  font-style: italic;
+  flex: 1;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.testimonial-photo {
+  width: 50px;
+  height: 50px;
+  margin: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eee;
+  flex-shrink: 0;
+  border: 2px solid #f8fafc;
+}
+
+.testimonial-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-info h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: #1e293b;
+}
+
+.author-info span {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ===============================
+   TESTIMONIAL FORM SECTION
+================================== */
+.testimonial-form-container {
+  margin-top: 80px;
+  padding: 50px;
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 650px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.form-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  font-size: 14px;
+  color: #666;
+}
+
+.testimonial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #999;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  font-family: "Inter", sans-serif;
+}
+
+.submit-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #6a040f 0%, #352816 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #8a0513 0%, #4a381e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 4, 15, 0.2);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+
+
+
+/* ===============================
+   MOBILE RESPONSIVE DESIGN
+================================== */
+
+
+ 
+
+/* Medium tablets (768px to 1024px) */
+@media (max-width: 768px) {
+  
+
+  .hero-section {
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px 5%;
+  }
+
+  .hero-content {
+    gap: 15px;
+  }
+
+  .hero-mission,
+  .hero-vision {
+    padding: 20px;
+  }
+
+  .hero-mission h2,
+  .hero-vision h2 {
+    font-size: 18px;
+  }
+
+  .hero-mission p,
+  .hero-vision p {
+    font-size: 13px;
+  }
+
+  .investment-header h2 {
+    font-size: 24px;
+  }
+
+  .investment-cards {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .investment-card {
+    padding: 20px;
+  }
+
+  .investment-card img {
+    height: 150px;
+  }
+
+  .investment-plans .investment-plans-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .investment-plans-cards .investment-plan-card {
+    padding: 20px;
+  }
+
+  .investment-plans .investment-plans-header h2 {
+    font-size: 20px;
+  }
+
+  .what-we-do {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 0;
+  }
+
+  .what-we-do .feature {
+    padding: 20px;
+  }
+
+  .what-we-do .feature h3 {
+    font-size: 16px;
+  }
+
+  .what-we-do .feature p {
+    font-size: 14px;
+  }
+
+  .welcome-container {
+    height: 300px;
+    padding: 40px 5%;
+  }
+
+  .welcome-content {
+    top: 20%;
+  }
+
+  .welcome-content h3 {
+    font-size: 1rem;
+  }
+
+  .welcome-paragraph {
+    font-size: 14px;
+  }
+
+  .welcome-meta {
+    font-size: 12px;
+  }
+
+  .testimonials {
+    padding: 60px 5%;
+  }
+
+  .testimonials-header h2 {
+    font-size: 28px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .testimonial-card {
+    padding: 20px;
+  }
+
+  .crispybool-certificate {
+    padding: 50px 5%;
+    min-height: auto;
+  }
+
+  .certificate-container {
+    max-width: 600px;
+  }
+
+  .certificate-content h2 {
+    font-size: 26px;
+  }
+
+  .certificate-subtitle {
+    font-size: 16px;
+  }
+
+  .certificate-description {
+    font-size: 14px;
+  }
+
+  .trust-indicators {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .certificate-btn {
+    padding: 14px 32px;
+    font-size: 14px;
+  }
+
+  .certificate-footer {
+    font-size: 12px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .testimonial-card {
+    padding: 20px;
+  }
+
+  .testimonial-content p {
+    font-size: 14px;
+  }
+
+  .testimonial-content h4 {
+    font-size: 16px;
+  }
+
+  .testimonial-form-container {
+    padding: 30px;
+    margin-top: 40px;
+  }
+
+  .form-header {
+    margin-bottom: 30px;
+  }
+
+  .form-header h2 {
+    font-size: 22px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+} /* FIX: Moved closing brace down to properly encapsulate 768px tablet styles */
+
+ 
+
+
+
+
+/* Small phones (480px to 768px) */
+@media (max-width: 480px) {
+   .hero-section {
+    padding: 20px 5%;
+  }
+
+  .sliding {
+    height: 200px;
+  }
+
+  .hero-mission,
+  .hero-vision {
+    padding: 15px;
+  }
+
+  .hero-mission h2,
+  .hero-vision h2 {
+    font-size: 16px;
+  }
+
+  .hero-mission p,
+  .hero-vision p {
+    font-size: 12px;
+  }
+
+  .investment-section {
+    padding: 30px 5%;
+  }
+
+  .investment-header h2 {
+    font-size: 20px;
+  }
+
+  .investment-header p {
+    font-size: 12px;
+  }
+
+  .investment-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .investment-card h3 {
+    font-size: 18px;
+  }
+
+  .investment-card p {
+    font-size: 12px;
+  }
+
+  .investment-card a {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .investment-plans {
+    padding: 20px 5%;
+  }
+
+  .investment-plans .investment-plans-header h2 {
+    font-size: 18px;
+  }
+
+  .investment-plans .investment-plans-header p {
+    font-size: 14px;
+  }
+
+  .investment-plans .investment-plans-cards {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .investment-plans-cards .investment-plan-card {
+    padding: 15px;
+  }
+
+  .investment-plans-cards .investment-plan-card h3 {
+    font-size: 16px;
+  }
+
+  .investment-plans-cards .investment-plan-card p {
+    font-size: 12px;
+  }
+
+  .investment-plans-cards .investment-plan-card li {
+    font-size: 11px;
+  }
+
+  .investment-plans-cards .investment-plan-card a {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .what-we-do {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin: 0;
+    padding: 30px 5%;
+  }
+
+  .what-we-do .feature {
+    padding: 15px;
+  }
+
+  .what-we-do .feature h3 {
+    font-size: 14px;
+  }
+
+  .what-we-do .feature p {
+    font-size: 12px;
+  }
+
+  .welcome-container {
+    height: 250px;
+    padding: 30px 5%;
+  }
+
+  .welcome-content {
+    top: 15%;
+  }
+
+  .welcome-content h3 {
+    font-size: 0.5rem;
+  }
+
+  .welcome-paragraph {
+    font-size: 13px;
+  }
+
+  .welcome-meta {
+    font-size: 11px;
+  }
+
+  .crispybool-certificate {
+    padding: 40px 1%;
+    min-height: auto;
+  }
+
+  .certificate-container {
+    max-width: 100%;
+  }
+
+  .certificate-badge {
+    margin-bottom: 20px;
+  }
+
+  .certificate-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .badge-text {
+    font-size: 12px;
+  }
+
+  .certificate-content h2 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .certificate-subtitle {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .certificate-description {
+    font-size: 13px;
+    margin-bottom: 25px;
+  }
+
+  .trust-indicators {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 25px;
+  }
+
+  .trust-item {
+    gap: 8px;
+  }
+
+  .trust-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+
+  .trust-item span:last-child {
+    font-size: 12px;
+  }
+
+  .certificate-btn {
+    padding: 12px 24px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .certificate-footer {
+    font-size: 11px;
+  }
+
+  .testimonials {
+    padding: 40px 5%;
+  }
+
+  .testimonials-header h2 {
+    font-size: 22px;
+  }
+
+  .testimonials-header p {
+    font-size: 12px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .testimonial-card {
+    padding: 15px;
+  }
+
+  .testimonial-photo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .testimonial-content p {
+    font-size: 13px;
+  }
+
+  .author-info h4 {
+    font-size: 14px;
+  }
+
+  .author-info span {
+    font-size: 12px;
+  }
+
+  .testimonial-form-container {
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 12px;
+  }
+
+  .form-header {
+    margin-bottom: 20px;
+  }
+
+  .form-header h2 {
+    font-size: 18px;
+  }
+
+  .form-header p {
+    font-size: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .submit-btn {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+
+  .welcome-content h3 {
+    font-size: 0.5rem;
+  }
+
+  .footer {
+    padding: 0 5%;
+  }
+
+  .footer-logo {
+    font-size: 18px;
+  }
+
+  .footer-tagline {
+    font-size: 12px;
+  }
+
+  .footer-column h4 {
+    font-size: 14px;
+  }
+
+  .footer-links li a {
+    font-size: 12px;
+  }
+
+  .footer-contact-item {
+    font-size: 12px;
+  }
+
+  .social-link {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+  }
+
+} /* FIX: Moved closing brace down to properly encapsulate 480px mobile styles */
+
+
+/* Extra small phones (below 360px) */
+@media (max-width: 360px) {
+  
+  .hero-section {
+    padding: 15px 3%;
+  }
+
+  .sliding {
+    height: 150px;
+  }
+
+  .hero-mission,
+  .hero-vision {
+    padding: 12px;
+  }
+
+  .hero-mission h2,
+  .hero-vision h2 {
+    font-size: 14px;
+  }
+
+  .hero-mission p,
+  .hero-vision p {
+    font-size: 11px;
+  }
+
+  .investment-header h2 {
+    font-size: 18px;
+  }
+
+  .investment-header p {
+    font-size: 11px;
+  }
+
+  .investment-card {
+    padding: 15px;
+  }
+
+  .investment-card h3 {
+    font-size: 16px;
+  }
+
+  .investment-card p {
+    font-size: 11px;
+  }
+
+  .investment-plans .investment-plans-header h2 {
+    font-size: 16px;
+  }
+
+  .investment-plans .investment-plans-header p {
+    font-size: 12px;
+  }
+
+  .investment-plans-cards .investment-plan-card {
+    padding: 12px;
+  }
+
+  .what-we-do {
+    padding: 20px 5%;
+    gap: 15px;
+  }
+
+  .what-we-do .feature {
+    padding: 12px;
+  }
+
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .what-we-do .feature h3 {
+    font-size: 13px;
+  }
+
+  .what-we-do .feature p {
+    font-size: 11px;
+  }
+
+  .welcome-container {
+    height: 200px;
+    padding: 20px 3%;
+  }
+
+  .welcome-content {
+    top: 10%;
+  }
+
+  .welcome-content h3 {
+    font-size: 0.8rem;
+  }
+
+  .welcome-paragraph {
+    font-size: 12px;
+  }
+
+  .welcome-meta {
+    font-size: 10px;
+  }
+
+  .crispybool-certificate {
+    padding: 30px 1%;
+  }
+
+  .certificate-content h2 {
+    font-size: 20px;
+  }
+
+  .certificate-subtitle {
+    font-size: 13px;
+  }
+
+  .certificate-description {
+    font-size: 12px;
+  }
+
+  .testimonials {
+    padding: 30px 3%;
+  }
+
+  .testimonials-header h2 {
+    font-size: 18px;
+  }
+
+  .testimonials-header p {
+    font-size: 11px;
+  }
+
+  .testimonial-card {
+    padding: 12px;
+  }
+
+  .testimonial-content p {
+    font-size: 12px;
+  }
+
+  .author-info h4 {
+    font-size: 13px;
+  }
+
+  .author-info span {
+    font-size: 11px;
+  }
+}
+    
+
+  
+
+/* =============================== 
+   TABLET BREAKPOINT
+================================== */
+@media (max-width: 1099px) {
+  .investment-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .investment-plans .investment-plans-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .what-we-do {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .testimonial-form-container {
+    padding: 40px 30px;
+    margin-top: 50px;
+  }
+
+  .form-header h3 {
+    font-size: 20px;
+  }
+
+  .about-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .vision-mission-about {
+    padding: 20px 10px;
+  }
+
+  .values {
+    padding: 20px 10px;
+  }
+
+  .welcome-container {
+    height: 350px;
+  }
+
+  .welcome-content {
+    top: 25%;
+  }
+}
+
+
+
+
+
+/* ===============================
+   MOBILE BREAKPOINT
+================================== */
+@media (max-width: 767px) {
+ 
+
+  .navbar ul {
+    flex-direction: column;
+  } 
+
+  .hero-section {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .sliding {
+    height: 250px;
+  }
+
+  .investment-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .investment-plans .investment-plans-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .what-we-do {
+    padding: 40px 5%;
+  }
+
+  .welcome-container {
+    height: 280px;
+    padding: 35px 5%;
+  }
+
+  .welcome-content {
+    top: 18%;
+  }
+
+  .welcome-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .welcome-paragraph {
+    font-size: 15px;
+  }
+
+  .testimonials {
+    padding: 50px 5%;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .what-we-do {
+    grid-template-columns: 1fr;
+  }
+
+  .investment-header h2 {
+    font-size: 24px;
+  }
+
+  .testimonials-header h2 {
+    font-size: 24px;
+  }
+
+  .testimonial-form-container {
+    padding: 30px 20px;
+    margin-top: 40px;
+  }
+
+  .form-header h3 {
+    font-size: 18px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px;
+    padding: 12px 12px;
+  }
+
+  .submit-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+} /* FIX: Moved closing brace down to properly encapsulate 767px mobile styles and removed duplicate grid rule */
+
+ .welcome-container {
+  background: linear-gradient(180deg, rgba(20, 18, 28, 0.68), rgba(87, 15, 15, 0.82)), url('../images/CTA%20photo1.avif');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-clip: padding-box;
+  padding: 50px 5%;
+  text-align: center;
+  width: 100%;
+  min-height: 320px;
+  height: auto;
+  min-height: 320px !important;
+  height: auto !important; /* Prevents earlier media queries from squishing the container */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border-radius: 24px; */
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  margin: 0;
+
+  /* Fix for sub-pixel background bleeding caused by border-radius */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  outline: 1px solid transparent;
+  
+
+} 
+
+.welcome-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 40%);
+  pointer-events: none;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(16px);
+  top: auto;
+  top: auto !important; /* Overrides earlier media queries pushing top offset */
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+.welcome-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.welcome-content h3 {
+  font-size: clamp(1rem, 3.2vw, 2.8rem);
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.welcome-paragraph {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  line-height: 1.75;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.welcome-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  color: rgba(229, 231, 235, 0.95);
+  font-size: 0.95rem;
+}
+
+.welcome-meta span {
+  background: rgba(236, 232, 232, 0.12);
+  padding: 10px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Clean Responsive Typing Animation Fix */
+.typing-container {
+  display: inline-block;
+  position: relative;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: clamp(13px, 4vw, 36px) !important;
+  margin-bottom: 5px;
+}
+.typing-container .hidden-text {
+  visibility: hidden;
+  white-space: nowrap;
+  font-size: inherit !important;
+}
+.typing-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  width: 0;
+  height: 100%;
+  color: #ffffff;
+  border-right: 3px solid transparent;
+  font-size: inherit !important;
+  animation: none !important; /* Prevents auto-play before intersection observer fires */
+}
+        
+.typing-text.scroll-typing {
+  border-right: 3px solid rgba(255, 255, 255, 0.88);
+  animation: exact-typing 3s steps(32, end) forwards, exact-blink 0.7s infinite !important;
+}
+
+@keyframes exact-typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes exact-blink {
+  50% { border-color: transparent; }
+}
+
+.footer-content{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  
+}
+
+  .about-section {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 10px;
+  }
+
+  .vision-mission-about {
+    padding: 20px 10px;
+  }
+
+  .values {
+    padding: 20px 10px;
+  }
+
+  .value-img {
+    float: none;
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+
+  .values-content {
+    overflow: visible;
+  }
+
+  .values-content h2 {
+    font-size: 24px;
+  }
+/* login container */
+  .login-container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .login-main{
+    background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+  } 
+
+/* ===============================
+   CRYPTO SECTION OPTIMIZATIONS
+================================== */
+.crypto-section {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.crypto-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.crypto-filters {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.crypto-filters::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.filter-btn {
+  padding: 8px 20px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: #f8fafc;
+  color: #334155;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: linear-gradient(135deg, #6a040f 0%, #352816 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(106, 4, 15, 0.2);
+}
+.crypto-search {
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  outline: none;
+  font-size: 14px;
+  min-width: 200px;
+  flex: 1;
+  max-width: 300px;
+  background: #f8fafc;
+  color: #334155;
+  transition: border-color 0.3s ease;
+}
+.crypto-search:focus {
+  border-color: #6a040f;
+}
+.crypto-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 20px !important;
+}
+.crypto-actions {
+  text-align: center;
+  margin-top: 30px;
+}
+.crypto-show-more-btn {
+  padding: 12px 30px;
+  border: 2px solid #6a040f;
+  background: transparent;
+  color: #6a040f;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+.crypto-show-more-btn:hover {
+  background: #6a040f;
+  color: #ffffff;
+}
+.crypto-card {
+  padding: 18px !important;
+  border-radius: 16px !important;
+  transition: all 0.3s ease !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.crypto-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35) !important;
+}
+.crypto-card .crypto-name,
+.crypto-card .crypto-price {
+  color: #ffffff !important;
+}
+.crypto-card .crypto-rank,
+.crypto-card .crypto-market-cap {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+@media (max-width: 768px) {
+  .crypto-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px !important;
+    gap: 16px !important;
+    margin-left: -5% !important;
+    margin-right: -5% !important;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    scrollbar-width: none;
+  }
+  .crypto-container::-webkit-scrollbar {
+    display: none;
+  }
+  .crypto-card {
+    flex: 0 0 75% !important;
+    scroll-snap-align: center !important;
+    min-width: 250px;
+  }
+  .crypto-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .crypto-search {
+    max-width: 100%;
+  }
+}

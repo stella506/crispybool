@@ -1,0 +1,363 @@
+/* ===============================
+   GLOBAL RESET (Same as index.css for consistency)
+================================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #fff;
+  line-height: 1.6;
+  color: #333;
+  top: 0px !important;
+  overflow-wrap: break-word; /* FIX: Prevents long legal URLs from causing horizontal scrolling */
+  word-wrap: break-word;
+  overflow-x: clip; /* Safely hides horizontal overflow */
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+/* google translate */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* ===============================
+
+/* ===============================
+   TERMS SECTION
+================================== */
+.terms-section {
+  background: linear-gradient(90deg, #352816 30%, #6a040f 100%);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 50px 5%;
+  min-height: calc(100vh - 200px); /* Adjust based on navbar/footer height */
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.terms-section h1 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.terms-section h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.terms-section p {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.terms-section h3 {
+  font-size: 22px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #fff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
+
+.terms-section ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.terms-section li {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.terms-section a {
+  color: #ff6f61;
+  text-decoration: none;
+}
+
+.terms-section a:hover {
+  text-decoration: underline;
+}
+
+.terms-section hr {
+  border: none;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 30px 0;
+}
+
+
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================== */
+
+/* Tablets and below (1024px) */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 90%;
+    padding: 35px;
+  }
+
+  .terms-section h1 {
+    font-size: 32px;
+  }
+
+  .terms-section h2 {
+    font-size: 22px;
+  }
+
+  .terms-section h3 {
+    font-size: 20px;
+  }
+
+  .terms-section p,
+  .terms-section li {
+    font-size: 15px;
+  }
+
+  .footer-content {
+    gap: 24px;
+  }
+}
+
+/* Medium tablets (768px and below) */
+@media (max-width: 768px) {
+  .terms-section {
+    padding: 30px 4%;
+    min-height: auto;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 25px;
+    border-radius: 8px;
+  }
+
+  .terms-section h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .terms-section h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .terms-section h3 {
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 12px;
+  }
+
+  .terms-section p {
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .terms-section li {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .terms-section ul {
+    margin-left: 16px;
+  }
+
+  .terms-section hr {
+    margin: 20px 0;
+  }
+
+  .footer {
+    padding: 0 4%;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer-column {
+    gap: 12px;
+  }
+
+  .footer-column h4 {
+    font-size: 14px;
+  }
+
+  .social-links {
+    justify-content: flex-start;
+  }
+}
+
+/* Small phones (480px and below) */
+@media (max-width: 480px) {
+  .terms-section {
+    padding: 20px 3%;
+  }
+
+  .container {
+    padding: 18px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .terms-section h1 {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .terms-section h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .terms-section h3 {
+    font-size: 15px;
+    margin-top: 18px;
+    margin-bottom: 10px;
+  }
+
+  .terms-section p {
+    font-size: 13px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .terms-section li {
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+
+  .terms-section ul {
+    margin-left: 12px;
+    margin-bottom: 10px;
+  }
+
+  .terms-section a {
+    word-break: break-word;
+  }
+
+  footer {
+    padding: 25px 3%;
+    font-size: 12px;
+  }
+
+  .footer {
+    padding: 0;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-size: 18px;
+  }
+
+  .footer-tagline {
+    max-width: 100%;
+    font-size: 12px;
+  }
+
+  .footer-column h4 {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .footer-links li a {
+    font-size: 12px;
+  }
+
+  .footer-contact-item {
+    font-size: 12px;
+  }
+
+  .social-links {
+    gap: 8px;
+  }
+
+  .social-link {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .footer-bottom {
+    padding: 15px 0 8px;
+    margin-top: 20px;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+  }
+}
+
+/* Extra small phones (360px and below) */
+@media (max-width: 360px) {
+  .terms-section {
+    padding: 16px 2%;
+  }
+
+  .container {
+    padding: 14px;
+  }
+
+  .terms-section h1 {
+    font-size: 20px;
+  }
+
+  .terms-section h2 {
+    font-size: 15px;
+  }
+
+  .terms-section h3 {
+    font-size: 14px;
+    margin-top: 15px;
+  }
+
+  .terms-section p,
+  .terms-section li {
+    font-size: 12px;
+  }
+
+  .terms-section ul {
+    margin-left: 10px;
+  }
+
+  footer {
+    padding: 20px 2%;
+  }
+}

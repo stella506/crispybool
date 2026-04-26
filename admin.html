@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script type="module" src="js/admin.js" defer></script>
+
+<style>
+
+/* =========================
+   GLOBAL STYLES
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #f1f5f9;
+  color: #111827;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(10px);
+
+  color: white;
+  padding: 15px 5%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.navbar span {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s ease;
+}
+
+.approve {
+  background: #16a34a;
+  color: white;
+}
+
+.approve:hover {
+  background: #15803d;
+}
+
+.reject {
+  background: #dc2626;
+  color: white;
+}
+
+.reject:hover {
+  background: #b91c1c;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+  margin-left: 10px;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  padding: 20px 5%;
+}
+
+/* =========================
+   STATS CARDS
+========================= */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card h3 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+.stat-card p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.controls input,
+.controls select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+
+.controls input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* =========================
+   TABLE
+========================= */
+.table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+th, td {
+  padding: 12px;
+  font-size: 14px;
+  text-align: left;
+}
+
+th {
+  background: #111827;
+  color: white;
+  font-weight: 500;
+}
+
+td {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* STATUS COLORS */
+.pending {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.success {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.failed {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* =========================
+   MOBILE OPTIMIZATION
+========================= */
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls input {
+    width: 100%;
+  }
+
+  th, td {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .stat-card h3 {
+    font-size: 18px;
+  }
+}
+
+/* =========================
+   CHAT AVATAR SYSTEM
+========================= */
+#adminMessages {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important; /* CRITICAL FIX: Forces rows to 100% width */
+  width: 100% !important;
+}
+.message-row {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.message-row.admin {
+  flex-direction: row !important;
+  justify-content: flex-end !important; /* Admin is right-aligned in admin panel */
+}
+.message-row.admin .chat-avatar {
+  order: 2 !important;
+}
+.message-row.admin .message-bubble {
+  order: 1 !important;
+}
+.message-row.user {
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+}
+.message-bubble {
+  text-align: left !important; /* CRITICAL FIX: Kill inherited centering */
+}
+.chat-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.chat-avatar.admin {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
+  color: white;
+}
+.chat-avatar.user {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>ILE-AYEWO
+  ! ! 
+  ! !
+  ! ! 
+  ! !
+  </h2>
+  <span>Eji-ogbe, Jowo, gbe ire wa ooo.</span>
+ 
+  <div>
+    <span>Transaction Management</span>
+    <button id="logoutBtn" class="btn logout-btn">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <h3 id="totalCount">0</h3>
+      <p>Total</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="pendingCount">0</h3>
+      <p>Pending</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="successCount">0</h3>
+      <p>Successful</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="failedCount">0</h3>
+      <p>Failed</p>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search email, type, method..." />
+
+    <select id="statusFilter">
+      <option value="all">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Successful">Successful</option>
+      <option value="Failed">Failed</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Plan</th>
+          <th>Method</th>
+          <th class="address">Address</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- =========================
+   ADMIN CHAT SYSTEM
+========================= -->
+<div style="margin-top: 30px; display: flex; gap: 20px; height: 500px;">
+
+  <!-- USERS LIST -->
+  <div style="width: 30%; background: white; border-radius: 12px; padding: 15px; overflow-y: auto;">
+    <h3 style="margin-bottom: 10px;">User Chats</h3>
+    <div id="userList"></div>
+  </div>
+
+  <!-- CHAT WINDOW -->
+  <div style="width: 70%; background: white; border-radius: 12px; display: flex; flex-direction: column;">
+
+    <div style="padding: 10px; border-bottom: 1px solid #eee;">
+      <strong id="chatUserTitle">Select a user</strong>
+    </div>
+
+    <div id="adminMessages" style="flex: 1; padding: 10px; overflow-y: auto;"></div>
+
+    <div style="display: flex; border-top: 1px solid #eee;">
+      <input id="adminReplyInput" type="text" placeholder="Type reply..."
+        style="flex: 1; padding: 10px; border: none; outline: none;" />
+      <button id="adminSendBtn" style="padding: 10px 15px; background: #111827; color: white; border: none;">
+        Send
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+   ADMIN AUTO AVATAR INJECTOR
+========================= -->
+<script>
+  // Ensures avatars render flawlessly in the admin panel without touching admin.js
+  document.addEventListener("DOMContentLoaded", () => {
+    const adminMessages = document.getElementById("adminMessages");
+    if (!adminMessages) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1 && node.classList.contains("message-bubble") && !node.closest(".message-row")) {
+            const isUser = node.classList.contains("user");
+            
+            const wrapper = document.createElement("div");
+            wrapper.className = `message-row ${isUser ? "user" : "admin"}`;
+            
+            const avatar = document.createElement("div");
+            avatar.className = `chat-avatar ${isUser ? "user" : "admin"}`;
+            avatar.innerHTML = isUser ? "👤" : "🎧"; // User profile & Headset Emoji 
+            
+            node.parentNode.insertBefore(wrapper, node);
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(node);
+          }
+        });
+      });
+    });
+    observer.observe(adminMessages, { childList: true });
+  });
+</script>
+</body>
+</html>

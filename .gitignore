@@ -1,0 +1,25 @@
+# Editor folders
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment variables (if ever used later)
+.env
+.env.*
+!.env.example
+
+# Dependencies (only if you ever add npm later)
+node_modules/
+package-lock.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output (future-proofing)
+dist/
+build/

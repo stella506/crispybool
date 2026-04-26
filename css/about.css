@@ -1,0 +1,414 @@
+
+/* ===============================
+   GLOBAL RESET
+================================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* enable native smooth scrolling when links jump around */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #5f4040;
+  line-height: 1.6;
+  color: #333;    
+  top: 0px !important;
+  overflow-wrap: break-word; /* FIX: Prevents long text from causing internal flex container blowouts */
+  word-wrap: break-word;
+  overflow-x: clip; /* Safely hides horizontal overflow without breaking mobile viewport scrolling */
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+/* google translate */
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* ===============================
+   NAVBAR (Desktop First)
+================================== */
+
+
+/* ================About section =========*/
+
+    .about-section {
+      display: flow-root; /* Block formatting context for newspaper float */
+      padding: 60px 5%;
+      background: linear-gradient(135deg, #e2e2d1 50%,  #aa9883 50%);
+    }
+
+.image-container {
+  float: left; /* Image floats left, text wraps right */
+  width: 400px;
+  max-width: 45%;
+  margin: 0 40px 20px 0;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+
+    .about-us {
+      display: block; /* Removed flex to allow natural text flow */
+      text-align: left;
+    }
+
+    .about-us h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      text-align: left;
+    }
+
+    .about-us-about p {
+      font-size: 16px;
+      line-height: 1.8; /* Editorial line height */
+      color: #333;
+      margin: 0 0 20px 0;
+      font-family: "Inter", sans-serif;
+      text-align: justify; /* Newspaper justification */
+      hyphens: auto;
+    }
+
+    /* Editorial Drop Cap */
+    .about-us-about p:first-of-type::first-letter {
+      float: left;
+      font-size: 3.8rem;
+      line-height: 0.8;
+      font-weight: 800;
+      color: #6a040f;
+      margin: 8px 12px 0 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .vision-mission-about{
+
+      display: flex;
+      flex-direction: column;
+      padding: 20px 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      
+      align-items: center;
+      gap: 20px;
+      background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .vision-content-about{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap; 
+      justify-content: center;
+      align-items: center;
+    } 
+
+    .vision-content-about p{
+    
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 auto 20px;
+    font-family: "Inter", sans-serif
+    
+    }
+
+    .mission-content-about{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap; 
+      justify-content: center;
+      align-items: center;
+    } 
+
+    .vision-content-about h2, .mission-content-about h2{
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .values {
+      display: flow-root;
+      padding: 60px 5%;
+      background: linear-gradient(135deg, #e2e2d1 50%,  #aa9883 50%);
+      color: #111;
+      margin: 0;
+    }
+
+    .value-img {
+      float: right; /* Alternating layout: right aligned image */
+      width: 400px;
+      max-width: 45%;
+      margin: 0 0 20px 40px;
+    }
+
+    .value-img img {
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: block;
+    }
+
+    .values-content {
+      display: block; /* Removed overflow hidden to allow text to wrap underneath */
+    }
+
+    .values-content h2 {
+      margin-top: 0;
+      font-size: 32px;
+      text-align: left;
+      color: #1a1a1a;
+    }
+
+    .values-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #222;
+      margin: 0 0 20px 0;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+   
+
+.typing-text {
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+  white-space: nowrap;      /* Prevents text from wrapping */
+  overflow: hidden;         /* Hides text until it appears */
+  border-right: 3px solid #00bfff; /* Cursor effect */
+  width: 0;                 /* Initial width for animation */
+  animation: 
+    typing 9s steps(38) forwards,  /* Typing animation */
+    blink 0.7s infinite;           /* Cursor blink */
+   animation-iteration-count: infinite;
+    color:black;
+
+  
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* ===============================
+   MOBILE RESPONSIVE DESIGN
+================================== */
+
+/* Medium tablets (768px to 1024px) */
+@media (max-width: 768px) {
+  .about-section {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 15px;
+    gap: 20px;
+  }
+
+  .vision-mission-about {
+    padding: 30px 15px;
+    gap: 30px;
+  }
+
+  .values {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 15px;
+    margin: 15px 0;
+  }
+
+  .vision-content-about h2, 
+  .mission-content-about h2, 
+  .about-us-about h2, 
+  .values-content h2 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .about-us-about p, 
+  .vision-content-about p,
+  .mission-content-about p,
+  .values-content p {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .image-container {
+    width: 100%;
+    max-width: 100%;
+    float: none;
+    margin: 0 0 20px 0;
+    order: -1; /* Ensures image stacks on top of text */
+  }
+
+  .value-img {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 20px 0;
+    float: none;
+    order: -1;
+  }
+
+  .about-us-about p:first-of-type::first-letter {
+    font-size: 3rem;
+    margin: 4px 8px 0 0;
+  }
+
+  .typing-text {
+    font-size: 20px;
+  }
+}
+
+/* Small phones (480px to 768px) */
+@media (max-width: 480px) {
+  .about-section {
+    flex-direction: column;
+    padding: 20px 10px;
+    gap: 15px;
+  }
+
+  .image-container {
+    width: 100%;
+  }
+
+  .about-us {
+    gap: 15px;
+  }
+
+  .about-us-about p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .vision-mission-about {
+    padding: 20px 10px;
+    gap: 20px;
+  }
+
+  .vision-content-about h2, 
+  .mission-content-about h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .vision-content-about p,
+  .mission-content-about p {
+    font-size: 13px;
+  }
+
+  .values {
+    padding: 20px 10px;
+    margin: 20px 0;
+  }
+
+  .values-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .values-content p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .value-img {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 15px 0;
+  }
+
+  .typing-text {
+    font-size: 16px;
+  }
+}
+
+/* Extra small phones (below 360px) */
+@media (max-width: 360px) {
+  .about-section {
+    flex-direction: column;
+    padding: 15px 8px;
+    gap: 12px;
+  }
+
+  .image-container {
+    width: 100%;
+  }
+
+  .about-us-about p {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .vision-mission-about {
+    padding: 15px 8px;
+    gap: 15px;
+  }
+
+  .vision-content-about h2, 
+  .mission-content-about h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .vision-content-about p,
+  .mission-content-about p {
+    font-size: 12px;
+  }
+
+  .values {
+    padding: 15px 8px;
+    margin: 15px 0;
+  }
+
+  .values-content h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .values-content p {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .value-img {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 12px 0;
+  }
+
+  .typing-text {
+    font-size: 14px;
+  }
+}

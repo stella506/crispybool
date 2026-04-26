@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Crispybool Investment</title>
+  <link rel="stylesheet" href="css/signup.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <!-- <script src="js/supabase.js"></script> -->
+  <script type="module" src="js/signup.js"></script>
+
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+  <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
+
+  <header>
+    
+  <div id="navbar-container"></div>
+
+<script type="module" src="js/navbar-auth.js"></script>
+
+  </header>
+
+  <!-- ================= REGISTRATION FORM ================= -->
+  <section class="registration-form">
+    <div class="personal-details">
+      <div class="login-header">
+        <h2>Create your account</h2>
+        <p>Join Crispybool Investment to start growing your portfolio with a secure, professional platform.</p>
+      </div>
+      <form class="js-registration-form" id="signupForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="name@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+            <span id="togglePassword" class="toggle-btn">Show</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="referral">Referral code <span class="optional">(optional)</span></label>
+          <input type="text" id="referral" name="referral" placeholder="Enter referral code">
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="accept" name="accept" required>
+          <label for="accept">I agree to the <a href="terms.html">terms and conditions</a>.</label>
+        </div>
+        <button type="submit" class="btn-primary">Register</button>
+      </form>
+      <div class="register">
+        <p>Already have an account? <a href="login.html">Login</a></p>
+        <a href="login.html" id="loginRedirect" class="btn-secondary">Go to login</a>
+      </div>
+    </div>
+  </section>
+
+
+  
+</body>
+</html>

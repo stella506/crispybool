@@ -1,0 +1,79 @@
+<header class="navbar-header">
+  <nav class="navbar" role="navigation">
+
+    <!-- Logo -->
+    <a href="dashboard.html" class="navbar-logo">
+      <!-- <span class="logo-icon">₿</span> -->
+      <span class="logo-text">Crispybool</span>
+    </a>
+
+    <!-- Hamburger Menu Button -->
+    <button 
+      class="hamburger" 
+      id="hamburger" 
+      aria-expanded="false"
+      aria-label="Toggle navigation menu"
+      aria-controls="navLinks"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <ul class="nav-links" id="navLinks">
+
+      <!-- Always visible -->
+      <li class="nav-item">
+        <a href="dashboard.html" class="nav-link">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="deposit.html" class="nav-link">
+          <span class="nav-icon">💳</span>
+          <span class="nav-text">Deposit</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="withdrawal.html" class="nav-link">
+          <span class="nav-icon">💸</span>
+          <span class="nav-text">Withdraw</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="transaction-history.html" class="nav-link">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="account-settings.html" class="nav-link">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-text">Settings</span>
+        </a>
+      </li>
+
+      <!-- Auth controlled -->
+      <li class="nav-item" id="nav-login">
+        <a href="login.html" class="nav-link nav-link-auth">
+          <span class="nav-text">Login</span>
+        </a>
+      </li>
+      <li class="nav-item" id="nav-signup">
+        <a href="signup.html" class="nav-link nav-link-primary">
+          <span class="nav-text">Sign Up</span>
+        </a>
+      </li>
+      <li class="nav-item" id="nav-logout">
+        <a href="#" id="logoutBtn" class="nav-link nav-link-logout">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Logout</span>
+        </a>
+      </li>
+
+    </ul>
+
+  </nav>
+</header>

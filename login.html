@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/navbar.css"> 
+  
+  <!-- Supabase CDN Library (must load before modules) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  
+  <!-- Application Script (loaded as module) -->
+  <script type="module" src="js/login.js"></script>
+  
+
+   <!-- google translate script -->
+
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  
+</head>
+
+<body>
+  <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
+
+
+  <header>
+      <div id="navbar-container"></div>
+
+ <script type="module" src="js/navbar-auth.js"></script>
+  </header>
+
+  <div class="login-main">
+     <div class="login-container">
+
+      <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p>Securely access your Crispybool dashboard and manage your investments with confidence.</p>
+      </div>
+
+      <p id="message" class="message"></p>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="name@example.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+
+          <div class="password-wrapper">
+            <input 
+              type="password" 
+              id="password"
+              placeholder="Enter your password"
+              required
+            >
+            <span id="togglePassword" class="toggle-btn">Show</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Login</button>
+
+        <div class="form-footer">
+          <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+
+      </form>
+
+      <div class="register">
+        <p>Need an account?</p>
+        <button type="button" id="registerBtn" class="btn-secondary">Create account</button>
+      </div>
+
+    </div>
+  </div>
+  
+
+ 
+
+  
+</body>
+</html>

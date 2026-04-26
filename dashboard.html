@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Crispybool Investment</title>
+
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/live-crypto.css">
+  <link rel="stylesheet" href="CSS/index.css">
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script type="module" src="js/dashboard.js"></script>
+  <script type="module" src="js/account-actions.js"></script>
+  <script type="module" src="js/chat.js"></script>
+  <script type="module" src="js/live-crypto.js"></script>
+  <script type="module" src="js/index.js"></script>
+
+
+  <!-- Google Translate -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* Uniform balance card styles matching deposit/withdrawal pages */
+    .balance-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .balance-section .card {
+        padding: 32px;
+        margin-bottom: 0;
+    }
+    .balance-section h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0;
+    }
+    .balance-section .card-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+        letter-spacing: -0.5px;
+        margin-top: 0;
+    }
+    @media (max-width: 600px) {
+        .balance-section { gap: 10px; }
+        .balance-section .card { padding: 20px; }
+        .balance-section .card-value { font-size: 1.4rem; }
+    }
+    @media (max-width: 480px) {
+        .balance-section .card { padding: 16px; }
+        .balance-section .card-value { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
+
+  <!-- ================= NAVBAR ================= -->
+  <header>
+    <div id="navbar-container"></div>
+    <script type="module" src="js/navbar-auth.js"></script>
+  </header>
+
+  <!-- ================= MAIN DASHBOARD ================= -->
+  <main class="dashboard">
+
+    <!-- HEADER -->
+    <section class="dashboard-header">
+      <h1>Welcome, <span id="usernameDisplay"></span></h1>
+      <p>Your dashboard is designed for real-time investment tracking and account management.</p>
+    </section>
+
+    <!-- STATUS -->
+    <section class="dashboard-meta">
+      <div class="status-pill pill-success">Account Active</div>
+      <p>Review balances, perform actions, and monitor your activity.</p>
+    </section>
+
+    <!-- BALANCES -->
+    <section class="balance-section">
+
+      <div class="card balance-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Account Balance</h4>
+        <div class="card-value" id="balanceValue">$0.00</div>
+      </div>
+
+      <div class="card profit-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Profit Balance</h4>
+        <div class="card-value" id="profitBalanceValue">$0.00</div>
+      </div>
+
+      <div class="card bonus-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Referral Earnings</h4>
+        <div class="card-value" id="bonusBalanceValue">$0.00</div>
+      </div>
+
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="dashboard-grid">
+
+      <div class="card">
+        <h3>💳 Deposit Funds</h3>
+        <button id="depositBtn">Deposit</button>
+      </div>
+
+      <div class="card">
+        <h3>🏦 Withdraw Funds</h3>
+        <button id="withdrawBtn">Withdraw</button>
+      </div>
+
+      <div class="card">
+        <h3>📊 Transaction History</h3>
+        <div id="transactionHistory">Loading...</div>
+      </div>
+
+      <div class="card">
+        <h3>⚙️ Account Settings</h3>
+        <button id="accountSettingsBtn">Manage Account</button>
+      </div>
+
+      <!-- 🔥 REFERRAL LINK -->
+      <div class="card referral-card">
+        <h3>🤝 Your Referral Link</h3>
+        <p>Share this link to earn bonuses when your friends sign up and invest.</p>
+
+        <div class="input-copy-group">
+          <input type="text" id="referralCodeInput" readonly value="Loading...">
+          <button id="copyReferralBtn">Copy</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 🔥 REFERRAL LIST -->
+    <section class="referral-section">
+
+      <div class="referral-header">
+        <h2>👥 Your Referrals</h2>
+        <div id="referralCountBadge">0</div>
+      </div>
+
+      <div id="referralList"></div>
+
+    </section>
+    
+  </main>
+
+  
+     <section class="crypto-section">
+  <h2>Live Market Update </h2>
+  <p class="crypto-subtitle">Stay updated with real-time cryptocurrency prices and market trends. Track your favorite coins and make informed investment decisions.</p>
+  <div class="crypto-last-updated" id="crypto-last-updated">Last updated: Loading...</div>
+
+  <div id="crypto-container" class="crypto-container">
+    <!-- Cards will be inserted here dynamically -->
+  </div>
+</section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>&copy; 2020 Crispybool Investment Ltd. All rights reserved.</p>
+  </footer>
+
+  <!-- ================= CHAT ================= -->
+  <div id="chatToggle">💬</div>
+
+  <div id="chatContainer" class="hidden">
+    <div class="chat-header">
+      <span>Support@Crispybool</span>
+      <button id="closeChat">✕</button>
+    </div>
+
+    <div id="messages" class="chat-messages"></div>
+
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button id="sendBtn">➤</button>
+    </div>
+  </div>
+
+</body>
+</html>

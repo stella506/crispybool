@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deposit Funds - Crispybool Investment</title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/deposit.css" />
+  <link rel="stylesheet" href="css/dashboard-nav.css" />
+  <link rel="stylesheet" href="css/glass-inputs.css" />
+  <link rel="stylesheet" href="css/chat.css" />
+    
+  <link rel="stylesheet" href="css/index.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script type="module" src="js/deposit.js" defer></script>
+  <script type="module" src="js/chat.js" defer></script>
+  <script type="module" src="js/index.js" defer></script>
+  
+ 
+  
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({ 
+        pageLanguage: 'en', 
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+</head>
+
+<body>
+  <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
+
+  <header>
+    <div id="navbar-container"></div>
+    <script type="module" src="js/dashboard-nav.js"></script>
+  </header>
+
+  <main class="dashboard">
+    <section class="dashboard-header">
+      <h1>Deposit Funds</h1>
+      <p>Choose your investment plan and fund your wallet securely.</p>
+    </section>
+
+    <!-- BALANCE CARDS -->
+    <section class="balance-section">
+      <div class="card balance-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Current Balance</h4>
+        <div class="card-value" id="balanceValue">$0.00</div>
+      </div>
+      <div class="card profit-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Profit Balance</h4>
+        <div class="card-value" id="profitValue">$0.00</div>
+      </div>
+    </section>
+
+    <!-- DEPOSIT FORM CARD -->
+    <section class="card">
+      <h3>Deposit Details</h3>
+      <form id="depositForm">
+        <div class="form-group">
+          <label for="deposit-options">Select Cryptocurrency</label>
+          <select id="deposit-options" required>
+            <option value="" disabled selected>Choose a payment method</option>
+            <option value="USDT">USDT (Tether)</option>
+            <option value="BTC">BTC (Bitcoin)</option>
+            <option value="ETH">ETH (Ethereum)</option>
+            <option value="BNB">BNB (Binance Coin)</option>
+            <option value="SOLANA">SOL (Solana)</option>
+            <option value="XRP">XRP (Ripple)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="contract-duration">Contract Duration</label>
+          <select id="contract-duration" required>
+            <option value="" disabled selected>Select duration</option>
+            <option value="1">Daily (1 day)</option>
+            <option value="7">Weekly (7 days)</option>
+            <option value="30">Monthly (30 days)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Investment Plans Select:</label>
+          <!-- Hidden original select to preserve logic -->
+          <select id="plans" required style="display: none;">
+            <option value="" disabled selected>Select your investment tier</option>
+            <option value="basic">🟢 Basic Plan ($100 - $999)</option>
+            <option value="standard">🔵 Standard Plan ($1,000 - $9,999)</option>
+            <option value="advance">🟠 Advanced Plan ($10,000 - $49,999)</option>
+            <option value="premium">🔴 Premium Plan ($50,000+)</option> 
+          </select>
+
+          <!-- Modern Plan Cards UI -->
+          <div class="plan-cards-container" id="plan-cards-container">
+            <div class="plan-card" data-value="basic" tabindex="0">
+              <div class="plan-card-header">
+                <span class="plan-name">🟢 Basic</span>
+              </div>
+              <div class="plan-roi">6.5% <span class="roi-label">Daily</span></div>
+              <div class="plan-range">$100 - $999</div>
+            </div>
+            
+            <div class="plan-card recommended" data-value="standard" tabindex="0">
+              <div class="recommended-badge"></div>
+              <div class="plan-card-header">
+                <span class="plan-name">🔵 Standard</span>
+              </div>
+              <div class="plan-roi">14.5% <span class="roi-label">Daily</span></div>
+              <div class="plan-range">$1,000 - $9,999</div>
+            </div>
+
+            <div class="plan-card" data-value="advance" tabindex="0">
+              <div class="plan-card-header">
+                <span class="plan-name">🟠 Advanced</span>
+              </div>
+              <div class="plan-roi">21.5% <span class="roi-label">Daily</span></div>
+              <div class="plan-range">$10,000 - $49,999</div>
+            </div>
+
+            <div class="plan-card" data-value="premium" tabindex="0">
+              <div class="plan-card-header">
+                <span class="plan-name">🔴 Premium</span>
+              </div>
+              <div class="plan-roi">28.5% <span class="roi-label">Daily</span></div>
+              <div class="plan-range">$50,000+</div>
+            </div>
+          </div>
+        </div>  
+
+        <div class="form-group">
+          <label for="depositAmount">Deposit Amount (USD)</label>
+          <input id="depositAmount" type="number" step="0.01" min="1" placeholder="Enter amount" required>
+          <p id="profit-display" style="font-weight: 600; min-height: 24px; margin-top: 15px; line-height: 1.5;"></p>
+        </div>
+        
+        <!-- EARNINGS CALENDAR -->
+        <button type="button" id="toggle-calendar-btn" class="calendar-toggle-btn" style="display: none;">
+          View Earnings Breakdown
+        </button>
+        <div id="earnings-calendar-container" class="calendar-container" style="display: none;">
+          <h4 class="calendar-title">Earnings Calendar</h4>
+          <div id="earnings-calendar-grid" class="earnings-grid"></div>
+        </div>
+
+        <p id="plan-message" style="font-weight: 600; min-height: 20px; color: #ff6f61;"></p>
+        
+        <!-- WALLET ADDRESSES -->
+        <div class="form-group" style="margin-top: 28px; padding-top: 28px; border-top: 2px solid #e2e8f0;">
+            <label style="font-size: 1rem; margin-bottom: 16px;">📍 Send Deposit to Any Address Below</label>
+            <div class="deposit-address">
+                <p>0x9d9dce4cc7787eca10416ec07982724b5b5614b1</p>
+                <button class="copy-btn" type="button">Copy</button>
+            </div>
+            <div class="deposit-address">
+                <p>0x7bdfd750dc6e80ef88aff45f1f4e1d057bd5e968</p>
+                <button class="copy-btn" type="button">Copy</button>
+            </div>
+        </div>
+
+        <!-- TRANSACTION ID -->
+        <div class="form-group" style="margin-top: 28px;">
+          <label for="transaction-id">Transaction ID</label>
+          <input id="transaction-id" type="text" placeholder="Enter your blockchain transaction hash" required>
+          <p style="font-size: 0.85rem; color: #64748b; margin-top: 8px;">✓ The transaction ID helps us verify your deposit and instantly update your balance.</p>
+        </div>
+
+        <button type="submit" id="deposit-submit-btn" style="margin-top: 24px;">Confirm Deposit</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- CHAT TOGGLE -->
+  <div id="chatToggle">
+    💬 <span id="chatBadge" class="badge hidden">0</span>
+  </div>
+
+  <!-- CHAT BOX -->
+  <div id="chatContainer" class="hidden">
+    <div class="chat-header">
+      <span>Support@crispybool</span>
+      <button id="closeChat">✕</button>
+    </div>
+
+    <div id="messages" class="chat-messages"></div>
+
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button id="sendBtn">➤</button>
+    </div>
+  </div>
+
+</body>
+</html>

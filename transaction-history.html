@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transaction History - Crispybool Investment</title>
+
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/dashboard-nav.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+
+  <!-- Your Script -->
+  <script type="module" src="js/transaction-history.js" defer></script>
+
+  <!-- Google Translate -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
+  <style>
+    /* ===============================
+       RESPONSIVE TRANSACTION HISTORY
+    ================================== */
+    #transactionHistoryList {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch; /* Smooth horizontal scroll on iOS */
+    }
+    
+    /* Ensure injected table has enough room to display properly without squishing */
+    #transactionHistoryList table {
+      width: 100%;
+      min-width: 600px; /* Prevents columns from collapsing on small screens */
+      border-collapse: collapse;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header h1 {
+        font-size: 24px;
+      }
+      .dashboard-header p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Translate -->
+  <div id="google_translate_element" style="text-align:right; margin:10px;"></div>
+
+  <!-- Navbar -->
+  <header>
+     <div id="navbar-container"></div>
+
+<script type="module" src="js/dashboard-nav.js"></script>
+  </header>
+
+  <!-- Main -->
+  <main class="dashboard">
+    <section class="dashboard-header">
+      <h1>Transaction History</h1>
+      <p>Your deposits and withdrawals appear below.</p>
+    </section>
+
+    <!-- Transaction Container -->
+    <section class="card">
+      <div id="transactionHistoryList">
+        <p style="text-align:center;">Loading transactions...</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

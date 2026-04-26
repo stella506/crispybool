@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Withdraw Funds - Crispybool Investment</title>
+
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/withdrawal.css" />
+  <link rel="stylesheet" href="css/dashboard-nav.css" />
+  <link rel="stylesheet" href="css/chat.css" />
+  <link rel="stylesheet" href="css/glass-inputs.css" />
+  <link rel="stylesheet" href="css/index.css" />
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script type="module" src="js/withdraw.js" defer></script>
+  <script type="module" src="js/chat.js" defer></script>
+  <script type="module" src="js/index.js" defer></script>
+
+  <!-- Google Translate -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+</head>
+
+<body>
+  <div id="google_translate_element" style="text-align:right; margin:10px;"></div>
+
+  <header>
+     <div id="navbar-container"></div>
+
+<script type="module" src="js/dashboard-nav.js"></script>
+  </header>
+
+  <main class="dashboard">
+
+    <section class="dashboard-header">
+      <h1> Withdraw Funds</h1>
+      <p>Request a withdrawal from your account or profit balance securely.</p>
+    </section>
+
+    <!-- BALANCE DISPLAY -->
+    <section class="balance-section">
+      <div class="card balance-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Account Balance</h4>
+        <div class="card-value" id="accountBalanceDisplay">$0.00</div>
+      </div>
+      <div class="card profit-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); border-left: none;">
+        <h4>Profit Balance</h4>
+        <div class="card-value" id="profitBalanceDisplay">$0.00</div>
+      </div>
+    </section>
+
+    <!-- WITHDRAWAL FORM -->
+    <section class="card">
+      <h3>Withdrawal Request</h3>
+      <div id="error-message" class="error-message"></div>
+
+      <form id="withdrawalForm">
+        <div class="form-group">
+          <label for="withdrawAmount">Withdrawal Amount ($)</label>
+          <input id="withdrawAmount" type="number" min="10" step="0.01" placeholder="Enter amount (min $10)" required />
+        </div>
+
+        <div class="form-group">
+          <label for="withdrawalType">Select Balance Type</label>
+          <select id="withdrawalType" required>
+            <option value="account">💳 Account Balance</option>
+            <option value="profit">📈 Profit Balance</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="withdrawalMethod">Payment Method</label>
+          <select id="withdrawalMethod" required>
+            <option value="" disabled selected>Choose cryptocurrency</option>
+            <option value="USDT">USDT (Tether)</option>
+            <option value="BTC">BTC (Bitcoin)</option>
+            <option value="ETH">ETH (Ethereum)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="withdrawalAddress">Wallet Address</label>
+          <input id="withdrawalAddress" type="text" placeholder="Enter your wallet address" required />
+          <small class="form-hint">Ensure your wallet address is correct. Funds will be sent to this address.</small>
+        </div>
+
+        <button type="submit" id="withdraw-btn">Withdraw Now</button>
+      </form>
+    </section>
+
+    <!-- WITHDRAWAL HISTORY -->
+    <section class="card">
+      <h3>Recent Withdrawals</h3>
+      <div id="withdrawalHistory" class="history-list">
+        <div class="history-empty">No withdrawals yet.</div>
+      </div>
+    </section>
+
+  </main>
+
+   <!-- CHAT TOGGLE -->
+  <div id="chatToggle">
+    💬 <span id="chatBadge" class="badge hidden">0</span>
+  </div>
+
+  <!-- CHAT BOX -->
+  <div id="chatContainer" class="hidden">
+    <div class="chat-header">
+      <span>Support@crispybool</span>
+      <button id="closeChat">✕</button>
+    </div>
+
+    <div id="messages" class="chat-messages"></div>
+
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button id="sendBtn">➤</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+footer {
+  background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+footer a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+footer a:hover {
+  color: #fff;
+}
+
+.footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5%;
+  
+  
+}
+
+.footer-content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 8px;
+}
+
+.footer-logo-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.footer-logo-text {
+  display: inline-block;
+  line-height: 1;
+}
+
+.footer-tagline {
+  max-width: 280px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.footer-column h4 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links li a {
+  display: inline-block;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-links li a:hover {
+  color: #bfe1ff;
+  text-align: center;
+  
+}
+
+.footer-contact-item {
+  margin: 0;
+   line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.social-link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 20px 0 10px;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================== */
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 15px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-tagline {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    padding: 25px 10px;
+  }
+
+  .footer-logo {
+    font-size: 18px;
+  }
+
+  .footer-tagline,
+  .footer-links li a,
+  .footer-contact-item {
+    font-size: 13px;
+  }
+
+  .social-link {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .footer-bottom {
+    margin-top: 20px;
+  }
+}
