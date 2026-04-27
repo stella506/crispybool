@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   function generateReferralLink(username) {
     const baseUrl = window.location.origin;
-    return `${baseUrl}/crispybool/signup.html?ref=${username}`;
+    return `${baseUrl}/crispybool/index.html?ref=${username}`;
   }
 
   // --- FETCH DASHBOARD DATA ---

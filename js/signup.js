@@ -62,6 +62,13 @@ handleReferral();
   const acceptInput = document.getElementById('accept');
   const togglePassword = document.getElementById('togglePassword');
 
+  // --- AUTO-FILL FROM HOMEPAGE REFERRAL FLOW ---
+  const storedReferralUser = localStorage.getItem('referralUser');
+  if (storedReferralUser && referralInput && !referralInput.value) {
+    referralInput.value = storedReferralUser;
+    referralInput.readOnly = true;
+  }
+
   // --- PASSWORD TOGGLE ---
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener('click', function (e) {
@@ -111,7 +118,7 @@ handleReferral();
     const referralFromInput = referralInput ? referralInput.value.trim() : '';
 
     // Priority: URL/localStorage > manual input
-    const finalReferral = referralFromStorage || referralFromInput || null;
+    const finalReferral = referralFromStorage || localStorage.getItem('referralUser') || referralFromInput || null;
 
     // --- VALIDATION ---
     if (!usernameValue) errors.push('Username is required.');
@@ -167,6 +174,7 @@ handleReferral();
 
       // --- CLEAR REFERRAL AFTER USE ---
       localStorage.removeItem('referral');
+      localStorage.removeItem('referralUser');
 
       // --- FORCE LOGOUT ---
       await supabase.auth.signOut();

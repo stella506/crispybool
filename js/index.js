@@ -128,3 +128,77 @@ if (testimonialForm) {
     }, 2000);
   });
 }
+
+// Handle referral tracking from URL
+document.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  
+  if (ref) {
+    localStorage.setItem('referralUser', ref);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
+// ==================================================
+// REAL-TIME DEPOSIT/WITHDRAWAL ACTIVITY SIMULATION
+// ==================================================
+document.addEventListener('DOMContentLoaded', function() {
+  const feedContainer = document.getElementById('activity-feed');
+  if (!feedContainer) return;
+
+  const firstNames = ["John", "Emily", "Michael", "Sarah", "David", "Jessica", "Chris", "Laura", "James", "Linda", "Robert", "Maria", "Daniel", "Susan", "William", "Karen", "Omar", "Aisha", "Kenji", "Mei"];
+  const lastNames = ["S.", "J.", "W.", "B.", "G.", "M.", "D.", "R.", "H.", "L.", "P.", "K."];
+  const MAX_ITEMS = 12;
+
+  function getRandomItem(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function generateRandomActivity() {
+    const type = Math.random() > 0.3 ? 'Deposit' : 'Withdrawal'; // 70% chance of deposit
+    const name = `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`;
+    const amount = (type === 'Deposit')
+      ? Math.floor(Math.random() * (4500 - 150 + 1)) + 150
+      : Math.floor(Math.random() * (2000 - 50 + 1)) + 50;
+
+    return { type, name, amount };
+  }
+
+  function createActivityElement(activity) {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+
+    const typeClass = activity.type.toLowerCase();
+    const icon = typeClass === 'deposit' ? 'fas fa-arrow-down' : 'fas fa-arrow-up';
+    const amountSign = typeClass === 'deposit' ? '+' : '-';
+
+    item.innerHTML = `
+      <div class="activity-info">
+        <div class="activity-icon ${typeClass}"><i class="${icon}"></i></div>
+        <p class="activity-name">${activity.name}</p>
+      </div>
+      <div class="activity-amount ${typeClass}">
+        ${amountSign}$${activity.amount.toLocaleString()}
+      </div>
+    `;
+    return item;
+  }
+
+  function addActivity() {
+    const activityData = generateRandomActivity();
+    const newElement = createActivityElement(activityData);
+
+    feedContainer.prepend(newElement);
+
+    if (feedContainer.children.length > MAX_ITEMS) {
+      feedContainer.lastElementChild.remove();
+    }
+
+    const randomInterval = Math.random() * (4500 - 2500) + 2500; // 2.5 to 4.5 seconds
+    setTimeout(addActivity, randomInterval);
+  }
+
+  // Kick off the simulation after a brief delay
+  setTimeout(addActivity, 1500);
+});
