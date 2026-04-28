@@ -89,6 +89,7 @@
     background: var(--card-bg);
     transition: all 0.3s ease;
     font-family: inherit;
+    min-height: 44px; /* Mobile touch target standard */
 }
 
 .form-group input:focus,
@@ -122,6 +123,7 @@ button {
     font-weight: 700;
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px rgba(106, 4, 15, 0.2);
+    min-height: 44px; /* Mobile touch target standard */
 }
 
 button:hover:not(:disabled) {
@@ -175,6 +177,34 @@ button:disabled {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
 }
+
+.recommended-badge {
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+/* ===============================
+   DYNAMIC WALLET ADDRESS STYLES
+================================== */
+.network-warning-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    background: var(--background);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 3px solid var(--warning);
+}
+
+.deposit-address-placeholder {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+    background: var(--background);
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+}
+
 
 /* RESPONSIVE STYLES */
 @media (max-width: 768px) {
@@ -248,11 +278,13 @@ button:disabled {
     .form-group select {
         padding: 14px 16px; /* FIX: Optimal touch target size */
         font-size: 16px; /* FIX: Prevents iOS Safari auto-zoom on focus */
+        min-height: 48px;
     }
 
     button {
         padding: 14px 20px; /* FIX: Optimal touch target size */
         font-size: 16px; /* FIX: Better tap readability */
+        min-height: 48px;
     }
 
     .deposit-address {
@@ -267,6 +299,7 @@ button:disabled {
     .copy-btn {
         padding: 10px 16px; /* FIX: Larger touch target for mobile thumbs */
         font-size: 0.9rem; /* FIX: Improved readability */
+        min-height: 44px;
     }
 }
 

@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const planSelect = document.getElementById('plans');
   const methodSelect = document.getElementById('deposit-options');
   const durationSelect = document.getElementById('contract-duration');
+  const walletDisplayContainer = document.getElementById('wallet-display-container');
 
   const balanceValueEl = document.getElementById('balanceValue');
   const profitValueEl = document.getElementById('profitValue');
@@ -128,6 +129,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   // HELPERS
   // -------------------------------
   const formatCurrency = num => '$' + Number(num).toFixed(2);
+
+  const walletAddresses = {
+    BTC: "bc1q4yyz5gpsyqsgxnm7ec2llngafa374z9a8yuxlm",
+    ETH: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
+    BNB: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
+    USDT: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7"
+  };
+
+  const networkWarnings = {
+    BTC: "Send only BTC to this address",
+    ETH: "Send only ETH (ERC20 compatible networks not supported here)",
+    BNB: "Send only BNB (BEP20)",
+    USDT: "Send only USDT (ERC20)"
+  };
 
   const planRanges = {
     basic: { min: 100, max: 999 },
@@ -292,22 +307,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // -------------------------------
-  // COPY BUTTON FUNCTIONALITY
+  // DYNAMIC WALLET ADDRESS & COPY
   // -------------------------------
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const address = btn.previousElementSibling.textContent;
-      navigator.clipboard.writeText(address).then(() => {
-        btn.textContent = 'Copied!';
-        setTimeout(() => {
-          btn.textContent = 'Copy';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showNotification('Failed to copy address', 'error');
-      });
-    });
+  function updateWalletAddress(coin) {
+    if (coin && walletAddresses[coin]) {
+        const address = walletAddresses[coin];
+        const warning = networkWarnings[coin];
+        walletDisplayContainer.innerHTML = `
+            <div class="deposit-address">
+                <p id="walletAddress">${address}</p>
+                <button id="copyWalletBtn" class="copy-btn" type="button">Copy</button>
+            </div>
+            <p class="network-warning-text">${warning}</p>
+        `;
+    } else {
+        walletDisplayContainer.innerHTML = `<p class="deposit-address-placeholder">Select a coin to view deposit address</p>`;
+    }
+  }
+
+  methodSelect.addEventListener('change', () => updateWalletAddress(methodSelect.value));
+
+  walletDisplayContainer.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'copyWalletBtn') {
+        const addressEl = document.getElementById('walletAddress');
+        if (addressEl) {
+            navigator.clipboard.writeText(addressEl.textContent).then(() => {
+                e.target.textContent = 'Copied!';
+                setTimeout(() => { e.target.textContent = 'Copy'; }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showNotification('Failed to copy address', 'error');
+            });
+        }
+    }
   });
+
+  updateWalletAddress(methodSelect.value); // Set initial state
 
   // -------------------------------
   // SUBMIT
@@ -327,6 +362,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!amount || !plan || !method || !txId || !durationStr) {
       showNotification('Fill all fields correctly', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirm Deposit';
+      return;
+    }
+
+    // Map and validate duration string to DB value
+    const durationMap = { "1": "daily", "7": "weekly", "30": "monthly" };
+    const contractDurationDb = durationMap[durationStr];
+    
+    if (!contractDurationDb) {
+      showNotification('Invalid contract duration selected', 'warning');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Confirm Deposit';
       return;
@@ -352,7 +398,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         method: method,
         status: 'Pending',
         tx_id: txId,
-        plan: plan // Add plan information to transaction
+        plan: plan, // Add plan information to transaction
+        contract_duration: contractDurationDb
       }]);
 
     if (error) {

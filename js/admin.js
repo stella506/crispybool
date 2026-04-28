@@ -278,6 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           method,
           address,
           plan,
+          contract_duration,
           created_at,
           user_id,
           profiles!transactions_user_id_fkey (
@@ -307,11 +308,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     failedCount.textContent = allData.filter(x => x.status === 'Failed').length;
   }
 
+  function formatDuration(val) {
+    if (!val) return 'N/A';
+    const v = val.toLowerCase();
+    if (v === 'daily') return 'Daily';
+    if (v === 'weekly') return 'Weekly';
+    if (v === 'monthly') return 'Monthly';
+    return 'N/A';
+  }
+
   function renderTransactions(data) {
+    // Dynamically add the new column header if it doesn't exist yet to preserve HTML UI
+    const theadRow = document.querySelector('.transactions-table thead tr');
+    if (theadRow && !theadRow.dataset.durationAdded) {
+      const th = document.createElement('th');
+      th.textContent = 'Contract Duration';
+      if (theadRow.children.length > 4) {
+        theadRow.insertBefore(th, theadRow.children[4]);
+      } else {
+        theadRow.appendChild(th);
+      }
+      theadRow.dataset.durationAdded = 'true';
+    }
+
     tableBody.innerHTML = '';
 
     if (!data.length) {
-      tableBody.innerHTML = `<tr><td colspan="8">No transactions</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="10">No transactions</td></tr>`;
       return;
     }
 
@@ -321,15 +344,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${email}</td>
-        <td>${tx.type}</td>
-        <td>$${Number(tx.amount).toFixed(2)}</td>
-        <td>${tx.plan || '-'}</td>
-        <td>${tx.method || '-'}</td>
-        <td class="address-col" title="${tx.address || ''}">${tx.address || '-'}</td>
-        <td><span class="status-badge ${statusClass}">${tx.status}</span></td>
-        <td>${new Date(tx.created_at).toLocaleString()}</td>
-        <td class="action-buttons">
+        <td data-label="Email">${email}</td>
+        <td data-label="Type">${tx.type}</td>
+        <td data-label="Amount">$${Number(tx.amount).toFixed(2)}</td>
+        <td data-label="Plan">${tx.plan || '-'}</td>
+        <td data-label="Duration">${formatDuration(tx.contract_duration)}</td>
+        <td data-label="Method">${tx.method || '-'}</td>
+        <td data-label="Address" class="address-col" title="${tx.address || ''}">${tx.address || '-'}</td>
+        <td data-label="Status"><span class="status-badge ${statusClass}">${tx.status}</span></td>
+        <td data-label="Date">${new Date(tx.created_at).toLocaleString()}</td>
+        <td data-label="Action" class="action-buttons">
           ${
             tx.status === 'Pending'
               ? `<button class="btn approve" title="Approve" onclick="approve('${tx.id}')">✔</button><button class="btn reject" title="Reject" onclick="reject('${tx.id}')">✖</button>`

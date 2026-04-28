@@ -69,8 +69,6 @@
             <option value="BTC">BTC (Bitcoin)</option>
             <option value="ETH">ETH (Ethereum)</option>
             <option value="BNB">BNB (Binance Coin)</option>
-            <option value="SOLANA">SOL (Solana)</option>
-            <option value="XRP">XRP (Ripple)</option>
           </select>
         </div>
 
@@ -151,14 +149,9 @@
         
         <!-- WALLET ADDRESSES -->
         <div class="form-group" style="margin-top: 28px; padding-top: 28px; border-top: 2px solid #e2e8f0;">
-            <label style="font-size: 1rem; margin-bottom: 16px;">📍 Send Deposit to Any Address Below</label>
-            <div class="deposit-address">
-                <p>0x9d9dce4cc7787eca10416ec07982724b5b5614b1</p>
-                <button class="copy-btn" type="button">Copy</button>
-            </div>
-            <div class="deposit-address">
-                <p>0x7bdfd750dc6e80ef88aff45f1f4e1d057bd5e968</p>
-                <button class="copy-btn" type="button">Copy</button>
+            <label style="font-size: 1rem; margin-bottom: 16px;">📍 Send Deposit to The Address Below</label>
+            <div id="wallet-display-container">
+                <p class="deposit-address-placeholder">Select a coin to view deposit address</p>
             </div>
         </div>
 

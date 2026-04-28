@@ -211,6 +211,15 @@ td {
 /* =========================
    MOBILE OPTIMIZATION
 ========================= */
+
+/* Touch target improvements */
+.controls input, .controls select, .btn {
+  min-height: 44px;
+}
+.table-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 768px) {
 
   .navbar {
@@ -226,6 +235,10 @@ td {
   .controls input {
     width: 100%;
   }
+  
+  .controls select {
+    width: 100%;
+  }
 
   th, td {
     font-size: 12px;
@@ -234,6 +247,24 @@ td {
 
   .stat-card h3 {
     font-size: 18px;
+  }
+
+  table {
+    min-width: 800px;
+  }
+
+  /* Mobile Chat Adjustments */
+  .chat-wrapper {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  .chat-sidebar {
+    width: 100% !important;
+    max-height: 250px;
+  }
+  .chat-main {
+    width: 100% !important;
+    height: 500px;
   }
 }
 
@@ -375,16 +406,16 @@ td {
 <!-- =========================
    ADMIN CHAT SYSTEM
 ========================= -->
-<div style="margin-top: 30px; display: flex; gap: 20px; height: 500px;">
+<div class="chat-wrapper" style="margin-top: 30px; display: flex; gap: 20px; height: 500px;">
 
   <!-- USERS LIST -->
-  <div style="width: 30%; background: white; border-radius: 12px; padding: 15px; overflow-y: auto;">
+  <div class="chat-sidebar" style="width: 30%; background: white; border-radius: 12px; padding: 15px; overflow-y: auto;">
     <h3 style="margin-bottom: 10px;">User Chats</h3>
     <div id="userList"></div>
   </div>
 
   <!-- CHAT WINDOW -->
-  <div style="width: 70%; background: white; border-radius: 12px; display: flex; flex-direction: column;">
+  <div class="chat-main" style="width: 70%; background: white; border-radius: 12px; display: flex; flex-direction: column;">
 
     <div style="padding: 10px; border-bottom: 1px solid #eee;">
       <strong id="chatUserTitle">Select a user</strong>

@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const feedContainer = document.getElementById('activity-feed');
   if (!feedContainer) return;
 
-  const firstNames = ["John", "Emily", "Michael", "Sarah", "David", "Jessica", "Chris", "Laura", "James", "Linda", "Robert", "Maria", "Daniel", "Susan", "William", "Karen", "Omar", "Aisha", "Kenji", "Mei"];
+  const firstNames = ["John", "Emily", "Michael", "Sarah", "David", "Jessica", "Chris", "Laura", "James", "Linda", "Robert", "Maria", "Daniel", "Susan", "William", "Karen", "Omar", "Aisha", "Kenji", "Mei", "sophia", "liam", "olivia", "noah", "emma", "ava", "isabella", "lucas", "mia", "ethan", "amelia"];
   const lastNames = ["S.", "J.", "W.", "B.", "G.", "M.", "D.", "R.", "H.", "L.", "P.", "K."];
   const MAX_ITEMS = 12;
 
@@ -159,8 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const type = Math.random() > 0.3 ? 'Deposit' : 'Withdrawal'; // 70% chance of deposit
     const name = `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`;
     const amount = (type === 'Deposit')
-      ? Math.floor(Math.random() * (4500 - 150 + 1)) + 150
-      : Math.floor(Math.random() * (2000 - 50 + 1)) + 50;
+      ? Math.floor(Math.random() * (12000 - 150 + 1)) + 150
+      : Math.floor(Math.random() * (5000 - 50 + 1)) + 50;
 
     return { type, name, amount };
   }

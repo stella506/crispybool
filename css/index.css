@@ -1860,7 +1860,7 @@ body {
    LIVE ACTIVITY SECTION
 ================================== */
 .live-activity-section {
-  padding: 60px 5%;
+  padding: 40px 5%;
   background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
   color: rgba(255, 255, 255, 0.9);
 }
