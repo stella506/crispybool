@@ -60,7 +60,8 @@
 }
 
 /* FORM STYLING */
-#depositForm {
+#depositForm,
+#withdrawalForm {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -82,21 +83,22 @@
 .form-group input,
 .form-group select {
     padding: 12px 14px;
-    border: 2px solid var(--border);
+    border: 1.5px solid #94a3b8; /* Clearer, higher contrast border for better visibility */
     border-radius: 8px;
     font-size: 0.95rem;
     color: var(--text-primary);
     background: var(--card-bg);
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     font-family: inherit;
-    min-height: 44px; /* Mobile touch target standard */
+    min-height: 48px; /* Improved touch target */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+    border-color: var(--primary); /* More professional focus state */
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
 }
 
 .form-group input::placeholder {
@@ -250,6 +252,37 @@ button:disabled {
     .copy-btn {
         width: 100%;
         text-align: center;
+    }
+}
+
+/* ===============================
+   MOBILE UI CONSISTENCY (Deposit & Withdrawal)
+================================== */
+@media (max-width: 640px) {
+    .dashboard-header h1 {
+        font-size: 1.6rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 12px !important;
+        letter-spacing: -0.5px !important;
+    }
+
+    .balance-section {
+        gap: 12px !important;
+    }
+
+    .balance-section .card {
+        padding: 20px !important;
+        border-radius: 12px !important;
+    }
+
+    .balance-section .card h4 {
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .balance-section .card-value {
+        font-size: 1.5rem !important;
+        margin-bottom: 0 !important;
     }
 }
 
