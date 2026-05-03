@@ -122,6 +122,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     .message.admin .message-footer {
       color: rgba(0, 0, 0, 0.5);
     }
+    .chat-input button#attachBtn {
+      background: transparent;
+      color: #111;
+      padding: 10px;
+      font-size: 18px;
+    }
+    #fileIndicator {
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      color: #666;
+      background: #f9f9f9;
+      border-top: 1px solid #eee;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: none;
+    }
   `;
   document.head.appendChild(chatStyles);
 
@@ -137,10 +154,79 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sendBtn = document.getElementById("sendBtn");
   const badge = document.getElementById("chatBadge");
 
+  let attachBtn, fileInput, fileIndicator;
+  if (input && input.parentNode) {
+    fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.id = "chatFileInput";
+    fileInput.style.display = "none";
+    
+    attachBtn = document.createElement("button");
+    attachBtn.innerHTML = "📎";
+    attachBtn.id = "attachBtn";
+    attachBtn.title = "Attach file or image";
+    attachBtn.onclick = () => fileInput.click();
+
+    input.parentNode.insertBefore(attachBtn, sendBtn);
+    input.parentNode.insertBefore(fileInput, sendBtn);
+
+    fileIndicator = document.createElement("div");
+    fileIndicator.id = "fileIndicator";
+    input.parentNode.parentNode.insertBefore(fileIndicator, input.parentNode);
+  }
+
+  let selectedFile = null;
+  if (fileInput) {
+    fileInput.addEventListener("change", (e) => {
+      selectedFile = e.target.files[0];
+      if (selectedFile) {
+        fileIndicator.textContent = `📎 Attached: ${selectedFile.name}`;
+        fileIndicator.style.display = "block";
+      } else {
+        fileIndicator.style.display = "none";
+      }
+    });
+  }
+
   if (!chatToggle || !chatContainer || !messagesDiv || !input || !sendBtn) {
     console.error("Chat UI elements missing");
     return;
   }
+
+  // --- EXPAND / FULLSCREEN FEATURE ---
+  let isExpanded = false;
+  const expandBtn = document.createElement("button");
+  expandBtn.id = "expandChatBtn";
+  expandBtn.innerHTML = "⛶";
+  expandBtn.title = "Expand chat";
+  expandBtn.style.marginRight = "10px";
+  expandBtn.style.fontSize = "16px";
+  expandBtn.style.transition = "transform 0.2s ease";
+  
+  if (closeChat && closeChat.parentNode) {
+    closeChat.parentNode.insertBefore(expandBtn, closeChat);
+  } else {
+    const chatHeader = chatContainer.querySelector('.chat-header');
+    if (chatHeader) chatHeader.appendChild(expandBtn);
+  }
+
+  expandBtn.addEventListener("click", () => {
+    isExpanded = !isExpanded;
+    if (isExpanded) {
+      chatContainer.classList.add("expanded");
+      expandBtn.innerHTML = "⤢";
+      expandBtn.title = "Collapse chat";
+      if (window.innerWidth <= 768) document.body.style.overflow = "hidden"; // Prevent bg scrolling
+    } else {
+      chatContainer.classList.remove("expanded");
+      expandBtn.innerHTML = "⛶";
+      expandBtn.title = "Expand chat";
+      document.body.style.overflow = "";
+    }
+    setTimeout(() => {
+      messagesDiv.scrollTo({ top: messagesDiv.scrollHeight, behavior: "smooth" });
+    }, 310); // Wait for CSS transition
+  });
 
   let userId = null;
   let unreadCount = 0;
@@ -209,6 +295,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       chatContainer.style.display = "none";
       chatContainer.classList.remove("open");
       chatContainer.classList.add("hidden");
+      if (chatContainer.classList.contains("expanded")) {
+        document.body.style.overflow = ""; // Clean up scroll lock if closed while expanded
+      }
     }
   }
 
@@ -225,9 +314,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   function addMessage(msg) {
     if (!msg) return;
 
-    // FIX: Remove "No messages yet" placeholder when a real message arrives
-    const emptyPlaceholder = messagesDiv.querySelector("p");
-    if (emptyPlaceholder && emptyPlaceholder.textContent === "No messages yet") {
+    // FIX: Remove empty placeholder when a real message arrives
+    const emptyPlaceholder = messagesDiv.querySelector(".empty-chat-state");
+    if (emptyPlaceholder) {
       emptyPlaceholder.remove();
     }
 
@@ -255,8 +344,81 @@ document.addEventListener("DOMContentLoaded", async () => {
     const div = document.createElement("div");
     div.className = `message ${isUser ? "user" : "admin"}`;
 
-    const content = document.createElement("span");
-    content.textContent = msg.message || "";
+    if (msg.file_url) {
+      if (msg.file_type && msg.file_type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.marginBottom = msg.message ? '8px' : '4px';
+        img.style.cursor = 'pointer';
+        div.appendChild(img);
+
+        if (msg.file_url.startsWith('http')) {
+          img.src = msg.file_url;
+          img.onclick = () => window.open(msg.file_url, '_blank');
+        } else {
+          img.alt = 'Loading image...';
+          supabase.storage.from('chat-files').createSignedUrl(msg.file_url, 3600).then(({data}) => {
+            if (data && data.signedUrl) {
+              img.src = data.signedUrl;
+              img.onclick = () => window.open(data.signedUrl, '_blank');
+            } else {
+              img.alt = 'Image not available';
+            }
+          });
+        }
+      } else {
+        const fileCard = document.createElement('div');
+        fileCard.style.display = 'flex';
+        fileCard.style.alignItems = 'center';
+        fileCard.style.gap = '8px';
+        fileCard.style.padding = '8px';
+        fileCard.style.background = isUser ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+        fileCard.style.borderRadius = '6px';
+        fileCard.style.marginBottom = msg.message ? '8px' : '4px';
+
+        const fileIcon = document.createElement('span');
+        fileIcon.textContent = '📄';
+        fileCard.appendChild(fileIcon);
+
+        const fileNameSpan = document.createElement('span');
+        fileNameSpan.textContent = msg.file_name || 'Download File';
+        fileNameSpan.style.flex = '1';
+        fileNameSpan.style.wordBreak = 'break-all';
+        fileNameSpan.style.fontSize = '0.85rem';
+        fileCard.appendChild(fileNameSpan);
+
+        const downloadBtn = document.createElement('a');
+        downloadBtn.textContent = 'Download';
+        downloadBtn.style.color = isUser ? '#fff' : '#007bff';
+        downloadBtn.style.textDecoration = 'none';
+        downloadBtn.style.fontWeight = 'bold';
+        downloadBtn.style.fontSize = '0.8rem';
+        downloadBtn.style.cursor = 'pointer';
+        fileCard.appendChild(downloadBtn);
+        div.appendChild(fileCard);
+
+        if (msg.file_url.startsWith('http')) {
+          downloadBtn.href = msg.file_url;
+          downloadBtn.target = "_blank";
+          downloadBtn.setAttribute('download', msg.file_name || 'download');
+        } else {
+          supabase.storage.from('chat-files').createSignedUrl(msg.file_url, 3600).then(({data}) => {
+            if (data && data.signedUrl) {
+              downloadBtn.href = data.signedUrl;
+              downloadBtn.target = "_blank";
+              downloadBtn.setAttribute('download', msg.file_name || 'download');
+            }
+          });
+        }
+      }
+    }
+
+    if (msg.message) {
+      const content = document.createElement("span");
+      content.textContent = msg.message;
+      div.appendChild(content);
+    }
 
     const footer = document.createElement("div");
     footer.className = "message-footer";
@@ -274,7 +436,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       footer.appendChild(tickSpan);
     }
 
-    div.appendChild(content);
     div.appendChild(footer);
 
     wrapper.appendChild(avatar);
@@ -308,7 +469,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       messagesDiv.innerHTML = "";
       if (!data || data.length === 0) {
-        messagesDiv.innerHTML = `<p style="text-align:center;opacity:0.6;">No messages yet</p>`;
+        messagesDiv.innerHTML = `<p class="empty-chat-state">24hrs Active Support</p>`;
         return;
       }
 
@@ -329,32 +490,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const text = input.value.trim();
-    if (!text) return;
+    if (!text && !selectedFile) return;
 
     // FIX: Disable inputs while sending to prevent rapid double-submissions
     sendBtn.disabled = true;
     input.disabled = true;
+    if (attachBtn) attachBtn.disabled = true;
     sendBtn.style.opacity = '0.5';
 
+    let fileUrl = null;
+    let fileType = null;
+    let fileName = null;
+
     try {
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `uploads/${uniqueFileName}`;
+        
+        const { data, error } = await supabase.storage
+          .from('chat-files')
+          .upload(filePath, selectedFile);
+
+        if (error) throw error;
+
+        fileUrl = filePath;
+        fileType = selectedFile.type;
+        fileName = selectedFile.name;
+      }
+
       const { error } = await supabase
         .from("messages")
         .insert([{
           user_id: userId,
           sender: "user",
           message: text,
-          is_read: false
+          is_read: false,
+          file_url: fileUrl,
+          file_type: fileType,
+          file_name: fileName
         }]);
 
       if (error) throw error;
 
       input.value = "";
+      selectedFile = null;
+      if (fileInput) fileInput.value = "";
+      if (fileIndicator) fileIndicator.style.display = "none";
     } catch (err) {
       console.error("Send message error:", err);
+      alert("Failed to send message. Please try again.");
     } finally {
       // Restore inputs regardless of success or failure
       sendBtn.disabled = false;
       input.disabled = false;
+      if (attachBtn) attachBtn.disabled = false;
       sendBtn.style.opacity = '1';
       input.focus();
     }

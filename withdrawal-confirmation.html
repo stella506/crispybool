@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdrawal Confirmation - Crispybool Investment</title>
+  <link rel="stylesheet" href="css/deposit.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    .confirmation-container { 
+      max-width: 600px; 
+      margin: 80px auto; 
+      padding: 20px; 
+    }
+    .spinner { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 40px; 
+      flex-direction: column; 
+      gap: 20px; 
+    }
+    .spinner-circle { 
+      width: 50px; 
+      height: 50px; 
+      border: 4px solid var(--border); 
+      border-top-color: var(--primary); 
+      border-radius: 50%; 
+      animation: spin 1s linear infinite; 
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .details-wrapper { 
+      display: none; 
+      background: var(--card-bg); 
+      border-radius: 12px; 
+      border: 1px solid var(--border); 
+      padding: 32px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+    }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .detail-value { font-weight: 700; color: var(--text-primary); text-align: right; word-break: break-all; }
+    .amount-value { font-size: 1.4rem; color: var(--primary); }
+    .status-badge { padding: 8px 16px; border-radius: 999px; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+    .status-badge.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .flex-value { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+    .copy-btn-small { background: transparent; border: none; color: var(--primary); cursor: pointer; transition: 0.2s; font-size: 1.1rem; }
+    .copy-btn-small:hover { color: var(--secondary); transform: scale(1.1); }
+    .copied { color: var(--success); }
+    .dashboard-btn { display: block; width: 100%; text-align: center; padding: 14px; background: linear-gradient(135deg, #1e3a5f 30%, #2d5a8c 100%); color: white; border-radius: 8px; font-weight: 700; text-decoration: none; margin-top: 24px; transition: all 0.3s; }
+    .dashboard-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2); }
+
+    /* ===============================
+       MOBILE RESPONSIVE ADJUSTMENTS
+    ================================== */
+    @media (max-width: 768px) {
+      .confirmation-container { margin: 60px auto; }
+    }
+    @media (max-width: 480px) {
+      .confirmation-container { margin: 30px auto; padding: 15px; }
+      .details-wrapper { padding: 20px 16px; }
+      /* Stack details vertically for readability */
+      .detail-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 0; }
+      .detail-value { text-align: left; width: 100%; font-size: 0.95rem; }
+      .flex-value { justify-content: space-between; width: 100%; }
+      .amount-value { font-size: 1.25rem; }
+      /* Expand touch targets */
+      .dashboard-btn { padding: 16px; font-size: 1rem; margin-top: 20px; }
+      .copy-btn-small { padding: 8px; font-size: 1.2rem; }
+      .spinner { padding: 20px; }
+      h1 { font-size: 1.5rem !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="navbar-container"></div>
+    <script type="module" src="js/navbar-auth.js"></script>
+  </header>
+  <main class="confirmation-container">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h1 style="color: var(--primary); margin-bottom: 10px;">Withdrawal Processing</h1>
+      <p id="confirmation-message">Initializing confirmation...</p>
+    </div>
+    <div id="confirmation-spinner" class="spinner">
+      <div class="spinner-circle"></div>
+      <p style="color: var(--text-secondary); font-weight: 500;">Securing transaction details...</p>
+    </div>
+    <div id="deposit-details-wrapper" class="details-wrapper">
+      <div style="text-align: center; margin-bottom: 24px;"><div id="status-badge" class="status-badge"></div></div>
+      <div id="deposit-details"></div>
+      <a href="dashboard.html" class="dashboard-btn">Return to Dashboard</a>
+    </div>
+  </main>
+  <footer>
+    <div id="footer-container"></div>
+    <script type="module" src="js/footer.js"></script>
+  </footer>
+  <script type="module" src="js/withdrawal-confirmation.js"></script>
+</body>
+</html>

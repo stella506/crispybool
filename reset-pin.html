@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Withdrawal PIN</title>
+  <link rel="stylesheet" href="css/login.css">
+  <style>
+    #notification-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .custom-notification {
+      padding: 14px 20px;
+      border-radius: 8px;
+      background: #fff;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border-left: 4px solid transparent;
+    }
+    .custom-notification.success { border-left-color: #10b981; }
+    .custom-notification.error { border-left-color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div id="notification-container"></div>
+  <div class="login-main">
+    <div class="login-container">
+      <div class="login-header">
+        <h2>Reset Withdrawal PIN</h2>
+        <p>Enter your new 4-digit PIN below to secure your transactions.</p>
+      </div>
+      <form id="resetPinForm">
+        <div class="form-group">
+          <label for="newPin">New PIN</label>
+          <input type="password" id="newPin" maxlength="4" pattern="\d{4}" required placeholder="4 digits" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label for="confirmPin">Confirm New PIN</label>
+          <input type="password" id="confirmPin" maxlength="4" pattern="\d{4}" required placeholder="4 digits" autocomplete="new-password">
+        </div>
+        <button type="submit" id="resetBtn" class="btn-primary">Reset PIN</button>
+      </form>
+    </div>
+  </div>
+  <script type="module" src="js/reset-pin.js"></script>
+</body>
+</html>

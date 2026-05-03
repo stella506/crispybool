@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     .transactions-table tbody tr:hover { background-color: #f9fafb; }
     .address-col {
       min-width: 320px; /* Provides ample space for full crypto addresses */
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* Monospace for easier reading of hashes */
     }
     .status-badge {
@@ -131,6 +134,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       border: 1px solid var(--border-color);
       height: 75vh;
       max-height: 800px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .chat-panel.expanded {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100%;
+      z-index: 99999;
+      border-radius: 0;
+      margin: 0;
+      max-height: none;
     }
     .chat-interface {
       display: flex;
@@ -169,7 +184,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       padding: 2px;
     }
     .chat-area { flex: 1; display: flex; flex-direction: column; }
-    .chat-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
+    .chat-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; align-items: center; }
+    .expand-admin-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      margin-left: auto;
+      padding: 0 8px;
+    }
+    .expand-admin-btn:hover { color: var(--text-primary); }
     .messages-container { flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
     .message-bubble { padding: 10px 14px; border-radius: 16px; max-width: 75%; word-break: break-word; line-height: 1.5; }
     .message-bubble.admin { background-color: var(--accent-blue); color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
@@ -179,6 +204,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     #adminReplyInput:focus { outline: 2px solid var(--accent-blue); border-color: var(--accent-blue); }
     #adminSendBtn { padding: 8px 16px; border: none; background-color: var(--accent-blue); color: white; border-radius: 6px; cursor: pointer; font-weight: 600; }
     #adminSendBtn:hover { background-color: #2563eb; }
+    #adminFileIndicator {
+      font-size: 12px;
+      padding: 6px 12px;
+      color: #6b7280;
+      background: #f9fafb;
+      border-top: 1px solid var(--border-color);
+      display: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #adminAttachBtn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      padding: 0 10px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    #adminAttachBtn:hover {
+      color: var(--text-primary);
+    }
     @media (max-width: 1200px) {
       .admin-main-grid { grid-template-columns: 1fr; }
       .chat-panel { height: 80vh; }
@@ -227,6 +274,71 @@ document.addEventListener('DOMContentLoaded', async () => {
   const adminInput = document.getElementById("adminReplyInput");
   const adminSendBtn = document.getElementById("adminSendBtn");
   const chatUserTitle = document.getElementById("chatUserTitle");
+
+  let adminAttachBtn, adminFileInput, adminFileIndicator;
+  if (adminInput && adminInput.parentNode) {
+    adminFileInput = document.createElement("input");
+    adminFileInput.type = "file";
+    adminFileInput.id = "adminFileInput";
+    adminFileInput.style.display = "none";
+    
+    adminAttachBtn = document.createElement("button");
+    adminAttachBtn.innerHTML = "📎";
+    adminAttachBtn.id = "adminAttachBtn";
+    adminAttachBtn.title = "Attach file or image";
+    adminAttachBtn.onclick = () => adminFileInput.click();
+
+    adminInput.parentNode.insertBefore(adminAttachBtn, adminSendBtn);
+    adminInput.parentNode.insertBefore(adminFileInput, adminSendBtn);
+
+    adminFileIndicator = document.createElement("div");
+    adminFileIndicator.id = "adminFileIndicator";
+    adminInput.parentNode.parentNode.insertBefore(adminFileIndicator, adminInput.parentNode);
+  }
+
+  let adminSelectedFile = null;
+  if (adminFileInput) {
+    adminFileInput.addEventListener("change", (e) => {
+      adminSelectedFile = e.target.files[0];
+      if (adminSelectedFile) {
+        adminFileIndicator.textContent = `📎 Attached: ${adminSelectedFile.name}`;
+        adminFileIndicator.style.display = "block";
+      } else {
+        adminFileIndicator.style.display = "none";
+      }
+    });
+  }
+  
+  // Admin Chat Expand Feature
+  let adminExpandBtn = document.createElement("button");
+  adminExpandBtn.innerHTML = "⛶";
+  adminExpandBtn.className = "expand-admin-btn";
+  adminExpandBtn.title = "Expand chat";
+  
+  const chatHeader = document.querySelector('.chat-header');
+  if (chatHeader) chatHeader.appendChild(adminExpandBtn);
+
+  let isAdminExpanded = false;
+  const chatPanel = document.querySelector('.chat-panel');
+  if (chatPanel) {
+    adminExpandBtn.addEventListener('click', () => {
+      isAdminExpanded = !isAdminExpanded;
+      if (isAdminExpanded) {
+        chatPanel.classList.add('expanded');
+        adminExpandBtn.innerHTML = '⤢';
+        adminExpandBtn.title = 'Collapse chat';
+        document.body.style.overflow = 'hidden';
+      } else {
+        chatPanel.classList.remove('expanded');
+        adminExpandBtn.innerHTML = '⛶';
+        adminExpandBtn.title = 'Expand chat';
+        document.body.style.overflow = '';
+      }
+      setTimeout(() => {
+        if (adminMessagesDiv) adminMessagesDiv.scrollTop = adminMessagesDiv.scrollHeight;
+      }, 310);
+    });
+  }
 
   let allData = [];
   let selectedUserId = null;
@@ -292,6 +404,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (error) throw error;
 
       allData = data || [];
+        console.log("[DEBUG] Fetched transactions:", allData);
       updateStats();
       renderTransactions(allData);
 
@@ -303,9 +416,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function updateStats() {
     totalCount.textContent = allData.length;
-    pendingCount.textContent = allData.filter(x => x.status === 'Pending').length;
-    successCount.textContent = allData.filter(x => x.status === 'Successful').length;
-    failedCount.textContent = allData.filter(x => x.status === 'Failed').length;
+    pendingCount.textContent = allData.filter(x => (x.status || '').toLowerCase().trim() === 'pending').length;
+    successCount.textContent = allData.filter(x => (x.status || '').toLowerCase().trim() === 'successful').length;
+    failedCount.textContent = allData.filter(x => (x.status || '').toLowerCase().trim() === 'failed').length;
   }
 
   function formatDuration(val) {
@@ -318,17 +431,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function renderTransactions(data) {
-    // Dynamically add the new column header if it doesn't exist yet to preserve HTML UI
+    // Completely align headers to match the row data perfectly
     const theadRow = document.querySelector('.transactions-table thead tr');
-    if (theadRow && !theadRow.dataset.durationAdded) {
-      const th = document.createElement('th');
-      th.textContent = 'Contract Duration';
-      if (theadRow.children.length > 4) {
-        theadRow.insertBefore(th, theadRow.children[4]);
-      } else {
-        theadRow.appendChild(th);
-      }
-      theadRow.dataset.durationAdded = 'true';
+    if (theadRow && !theadRow.dataset.headersFixed) {
+      theadRow.innerHTML = `
+        <th>Email</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Plan</th>
+        <th>Duration</th>
+        <th>Method</th>
+        <th>Address</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Action</th>
+      `;
+      theadRow.dataset.headersFixed = 'true';
     }
 
     tableBody.innerHTML = '';
@@ -340,7 +458,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     data.forEach(tx => {
       const email = tx.profiles?.email || '⚠️ Missing';
-      const statusClass = tx.status ? tx.status.toLowerCase() : 'pending';
+      const rawStatus = tx.status || 'Pending';
+      const statusLower = rawStatus.toLowerCase().trim();
 
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -351,11 +470,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Duration">${formatDuration(tx.contract_duration)}</td>
         <td data-label="Method">${tx.method || '-'}</td>
         <td data-label="Address" class="address-col" title="${tx.address || ''}">${tx.address || '-'}</td>
-        <td data-label="Status"><span class="status-badge ${statusClass}">${tx.status}</span></td>
+        <td data-label="Status"><span class="status-badge ${statusLower}">${rawStatus}</span></td>
         <td data-label="Date">${new Date(tx.created_at).toLocaleString()}</td>
         <td data-label="Action" class="action-buttons">
           ${
-            tx.status === 'Pending'
+            statusLower === 'pending'
               ? `<button class="btn approve" title="Approve" onclick="approve('${tx.id}')">✔</button><button class="btn reject" title="Reject" onclick="reject('${tx.id}')">✖</button>`
               : '-'
           }
@@ -377,7 +496,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         (tx.method || '').toLowerCase().includes(search)
       );
     }
-    if (status !== 'all') filtered = filtered.filter(tx => tx.status === status);
+    if (status !== 'all') {
+      filtered = filtered.filter(tx => (tx.status || '').toLowerCase().trim() === status.toLowerCase());
+    }
     renderTransactions(filtered);
   }
 
@@ -392,7 +513,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         .eq('id', id)
         .single();
 
-      if (!tx || tx.status !== 'Pending') return;
+      const statusLower = (tx.status || '').toLowerCase().trim();
+      if (!tx || statusLower !== 'pending') return;
 
       let balance = tx.profiles.balance || 0;
       let profit = tx.profiles.profit_balance || 0;
@@ -528,7 +650,83 @@ document.addEventListener('DOMContentLoaded', async () => {
     data.forEach(msg => {
       const div = document.createElement("div");
       div.className = `message-bubble ${msg.sender}`;
-      div.textContent = msg.message;
+      
+      if (msg.file_url) {
+        if (msg.file_type && msg.file_type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.style.maxWidth = '100%';
+          img.style.borderRadius = '8px';
+          img.style.marginBottom = msg.message ? '8px' : '0';
+          img.style.cursor = 'pointer';
+          div.appendChild(img);
+
+          if (msg.file_url.startsWith('http')) {
+            img.src = msg.file_url;
+            img.onclick = () => window.open(msg.file_url, '_blank');
+          } else {
+            img.alt = 'Loading image...';
+            supabase.storage.from('chat-files').createSignedUrl(msg.file_url, 3600).then(({data}) => {
+                if (data && data.signedUrl) {
+                    img.src = data.signedUrl;
+                    img.onclick = () => window.open(data.signedUrl, '_blank');
+                } else {
+                    img.alt = 'Image not available';
+                }
+            });
+          }
+        } else {
+          const isAdmin = msg.sender === 'admin';
+          const fileCard = document.createElement('div');
+          fileCard.style.display = 'flex';
+          fileCard.style.alignItems = 'center';
+          fileCard.style.gap = '8px';
+          fileCard.style.padding = '8px';
+          fileCard.style.background = isAdmin ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+          fileCard.style.borderRadius = '6px';
+          fileCard.style.marginBottom = msg.message ? '8px' : '0';
+
+          const fileIcon = document.createElement('span');
+          fileIcon.textContent = '📄';
+          fileCard.appendChild(fileIcon);
+
+          const fileNameSpan = document.createElement('span');
+          fileNameSpan.textContent = msg.file_name || 'Download File';
+          fileNameSpan.style.flex = '1';
+          fileNameSpan.style.wordBreak = 'break-all';
+          fileNameSpan.style.fontSize = '0.85rem';
+          fileCard.appendChild(fileNameSpan);
+
+          const downloadBtn = document.createElement('a');
+          downloadBtn.textContent = 'Download';
+          downloadBtn.style.color = isAdmin ? '#fff' : 'var(--accent-blue)';
+          downloadBtn.style.textDecoration = 'none';
+          downloadBtn.style.fontWeight = 'bold';
+          downloadBtn.style.fontSize = '0.8rem';
+          downloadBtn.style.cursor = 'pointer';
+          fileCard.appendChild(downloadBtn);
+          div.appendChild(fileCard);
+
+          if (msg.file_url.startsWith('http')) {
+            downloadBtn.href = msg.file_url;
+            downloadBtn.target = "_blank";
+            downloadBtn.setAttribute('download', msg.file_name || 'download');
+          } else {
+            supabase.storage.from('chat-files').createSignedUrl(msg.file_url, 3600).then(({data}) => {
+                if (data && data.signedUrl) {
+                    downloadBtn.href = data.signedUrl;
+                    downloadBtn.target = "_blank";
+                    downloadBtn.setAttribute('download', msg.file_name || 'download');
+                }
+            });
+          }
+        }
+      }
+      
+      if (msg.message) {
+        const content = document.createElement("span");
+        content.textContent = msg.message;
+        div.appendChild(content);
+      }
 
       adminMessagesDiv.appendChild(div);
     });
@@ -551,20 +749,70 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function sendReply() {
     const text = adminInput?.value.trim();
-    if (!text || !selectedUserId) return;
+    if (!text && !adminSelectedFile) return;
+    if (!selectedUserId) return;
+
+    if (adminSendBtn) adminSendBtn.disabled = true;
+    if (adminInput) adminInput.disabled = true;
+    if (adminAttachBtn) adminAttachBtn.disabled = true;
+
+    let fileUrl = null;
+    let fileType = null;
+    let fileName = null;
+
+    try {
+      if (adminSelectedFile) {
+        const fileExt = adminSelectedFile.name.split('.').pop();
+        const uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `uploads/${uniqueFileName}`;
+        
+        const { data, error } = await supabase.storage
+          .from('chat-files')
+          .upload(filePath, adminSelectedFile);
+
+        if (error) throw error;
+
+        fileUrl = filePath;
+        fileType = adminSelectedFile.type;
+        fileName = adminSelectedFile.name;
+      }
 
     const { error } = await supabase
       .from("messages")
-      .insert([{ user_id: selectedUserId, sender: "admin", message: text, is_read: false }]);
+        .insert([{ 
+          user_id: selectedUserId, 
+          sender: "admin", 
+          message: text, 
+          is_read: false,
+          file_url: fileUrl,
+          file_type: fileType,
+          file_name: fileName
+        }]);
 
     if (error) {
       console.error("Reply error:", error);
+        alert("Failed to send reply.");
       return;
     }
 
-    adminInput.value = "";
-    await loadMessages(selectedUserId);
-    await loadUsers();
+      if (adminInput) adminInput.value = "";
+      adminSelectedFile = null;
+      if (adminFileInput) adminFileInput.value = "";
+      if (adminFileIndicator) adminFileIndicator.style.display = "none";
+      
+      await loadMessages(selectedUserId);
+      await loadUsers();
+    } catch (err) {
+      console.error("Error sending reply:", err);
+      alert("Failed to send reply. Please try again.");
+    } finally {
+      if (adminSendBtn) adminSendBtn.disabled = false;
+      if (adminInput) {
+        adminInput.disabled = false;
+        adminInput.focus();
+      }
+      if (adminAttachBtn) adminAttachBtn.disabled = false;
+    }
   }
 
   adminSendBtn?.addEventListener("click", sendReply);
@@ -594,5 +842,81 @@ document.addEventListener('DOMContentLoaded', async () => {
   ========================== */
   fetchTransactions();
   loadUsers();
+
+  /* =========================
+     SUPPORT REQUESTS SYSTEM
+  ========================== */
+  async function initSupportPanel() {
+    // Dynamically create support panel to reuse existing CSS classes securely
+    const supportPanel = document.createElement('div');
+    supportPanel.className = 'transactions-panel'; 
+    supportPanel.style.marginTop = '24px';
+    supportPanel.innerHTML = `
+      <div class="transactions-header">
+        <h2>Support Requests</h2>
+      </div>
+      <div class="transactions-table-container">
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody id="supportTableBody">
+            <tr><td colspan="4" style="text-align:center;">Loading support requests...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+    
+    // Safely inject below the main grid
+    const mainGrid = document.querySelector('.admin-main-grid');
+    if (mainGrid && mainGrid.parentNode) {
+      mainGrid.parentNode.insertBefore(supportPanel, mainGrid.nextSibling);
+    } else {
+      document.body.appendChild(supportPanel);
+    }
+
+    await fetchSupportRequests();
+  }
+
+  async function fetchSupportRequests() {
+    const supportBody = document.getElementById('supportTableBody');
+    if (!supportBody) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('support')
+        .select('name, email, description, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        supportBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No support requests found.</td></tr>';
+        return;
+      }
+
+      supportBody.innerHTML = '';
+      data.forEach(req => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td data-label="Date">${new Date(req.created_at).toLocaleString()}</td>
+          <td data-label="Name">${req.name || '-'}</td>
+          <td data-label="Email">${req.email || '-'}</td>
+          <td data-label="Description" style="white-space: normal; min-width: 250px; max-width: 400px; line-height: 1.4;">${req.description || '-'}</td>
+        `;
+        supportBody.appendChild(row);
+      });
+    } catch (err) {
+      console.error("Fetch support error:", err);
+      supportBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--accent-red);">Failed to load support requests</td></tr>';
+    }
+  }
+
+  initSupportPanel();
 
 });

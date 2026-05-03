@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const networkWarnings = {
-    BTC: "Send only BTC to this address",
+    BTC: "Send only BTC to the above address",
     ETH: "Send only ETH (ERC20 compatible networks not supported here)",
     BNB: "Send only BNB (BEP20)",
     USDT: "Send only USDT (ERC20)"

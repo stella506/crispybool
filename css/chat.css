@@ -53,6 +53,7 @@
   box-shadow: 0 15px 50px rgba(0,0,0,0.2);
   overflow: hidden;
   z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* =========================
@@ -93,6 +94,25 @@
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+}
+
+
+/* =========================
+   EXPANDED (FULLSCREEN) STATE
+========================= */
+#chatContainer.expanded {
+  width: 80vw !important;
+  height: 85vh !important;
+  bottom: 7.5vh !important;
+  right: 10vw !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 16px;
+  z-index: 99999;
+}
+
+#chatContainer.expanded .chat-messages {
+  max-height: none !important;
 }
 
 /* =========================
@@ -230,4 +250,15 @@
 .message-tick {
   color: #4caf50; /* green for read */
   font-weight: bold;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+.empty-chat-state {
+  margin: auto;
+  text-align: center;
+  opacity: 0.6;
+  font-size: 0.95rem;
+  font-weight: 500;
 }

@@ -1,137 +1,80 @@
-// Support form validation and submission
 import { supabase } from "../src/lib/supabaseClient.js";
 
-document.addEventListener('DOMContentLoaded', function() {
-  const supportForm = document.getElementById('supportForm');
-  const nameInput = document.getElementById('name');
-  const emailInput = document.getElementById('email');
-  const messageInput = document.getElementById('message');
-  const nameError = document.getElementById('nameError');
-  const emailError = document.getElementById('emailError');
-  const messageError = document.getElementById('messageError');
-  const submitBtn = document.querySelector('.submit-btn');
+document.addEventListener('DOMContentLoaded', () => {
+  // Locate the support form or its container based on existing CSS classes
+  const supportForm = document.querySelector('.support-form form') || document.querySelector('.support-form');
+  if (!supportForm) return;
 
-  // Validation functions
-  function validateName(name) {
-    if (!name.trim()) {
-      return 'Full name is required.';
-    }
-    if (name.trim().length < 2) {
-      return 'Full name must be at least 2 characters long.';
-    }
-    if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-      return 'Full name can only contain letters and spaces.';
-    }
-    return '';
-  }
-
-  function validateEmail(email) {
-    if (!email.trim()) {
-      return 'Email address is required.';
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      return 'Please enter a valid email address.';
-    }
-    return '';
-  }
-
-  function validateMessage(message) {
-    if (!message.trim()) {
-      return 'Message is required.';
-    }
-    if (message.trim().length < 10) {
-      return 'Message must be at least 10 characters long.';
-    }
-    return '';
-  }
-
-  // Real-time validation
-  nameInput.addEventListener('input', function() {
-    const error = validateName(this.value);
-    nameError.textContent = error;
-    this.classList.toggle('error', !!error);
-  });
-
-  emailInput.addEventListener('input', function() {
-    const error = validateEmail(this.value);
-    emailError.textContent = error;
-    this.classList.toggle('error', !!error);
-  });
-
-  messageInput.addEventListener('input', function() {
-    const error = validateMessage(this.value);
-    messageError.textContent = error;
-    this.classList.toggle('error', !!error);
-  });
-
-  // Form submission
-  supportForm.addEventListener('submit', function(e) {
+  supportForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const nameValue = nameInput.value;
-    const emailValue = emailInput.value;
-    const messageValue = messageInput.value;
+    // Safely query inputs 
+    const nameInput = supportForm.querySelector('input[name="name"], #name, .name-input');
+    const emailInput = supportForm.querySelector('input[name="email"], #email, input[type="email"]');
+    const descInput = supportForm.querySelector('textarea[name="description"], #description, textarea');
+    const submitBtn = supportForm.querySelector('.submit-btn, button[type="submit"]');
 
-    const nameErrorMsg = validateName(nameValue);
-    const emailErrorMsg = validateEmail(emailValue);
-    const messageErrorMsg = validateMessage(messageValue);
+    // Create inline success message container if it doesn't exist
+    let successMessageEl = supportForm.querySelector('.inline-success-message');
+    if (!successMessageEl) {
+      successMessageEl = document.createElement('p');
+      successMessageEl.className = 'inline-success-message';
+      successMessageEl.style.backgroundColor = '#dcfce7';
+      successMessageEl.style.color = '#166534';
+      successMessageEl.style.padding = '12px 16px';
+      successMessageEl.style.borderRadius = '6px';
+      successMessageEl.style.marginBottom = '16px';
+      successMessageEl.style.display = 'none';
+      supportForm.prepend(successMessageEl);
+    }
 
-    // Display errors
-    nameError.textContent = nameErrorMsg;
-    emailError.textContent = emailErrorMsg;
-    messageError.textContent = messageErrorMsg;
+    if (!nameInput || !emailInput || !descInput) {
+      console.error('Support form fields missing in DOM.');
+      alert('Form configuration error. Please contact support directly.');
+      return;
+    }
 
-    // Add error classes
-    nameInput.classList.toggle('error', !!nameErrorMsg);
-    emailInput.classList.toggle('error', !!emailErrorMsg);
-    messageInput.classList.toggle('error', !!messageErrorMsg);
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const description = descInput.value.trim();
 
-    // If no errors, submit the form
-    if (!nameErrorMsg && !emailErrorMsg && !messageErrorMsg) {
-      // Disable submit button to prevent multiple submissions
+    successMessageEl.style.display = 'none';
+
+    if (!name || !email || !description) {
+      alert('Please fill out all fields before submitting.');
+      return;
+    }
+
+    const originalBtnText = submitBtn ? submitBtn.textContent : 'Submit';
+    if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending...';
+      submitBtn.textContent = 'Submitting...';
+    }
 
-      // Simulate form submission (replace with actual submission logic)
-      setTimeout(function() {
-        // Show success message
-        submitBtn.textContent = '✓ Message Sent Successfully!';
-        submitBtn.style.background = '#4CAF50';
+    try {
+      const { error } = await supabase
+        .from('support')
+        .insert([{ name, email, description }]);
 
-        // Reset form
-        setTimeout(function() {
-          supportForm.reset();
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Send Message';
-          submitBtn.style.background = '#ff6f61';
+      if (error) throw error;
 
-          // Clear error messages
-          nameError.textContent = '';
-          emailError.textContent = '';
-          messageError.textContent = '';
-          nameInput.classList.remove('error');
-          emailInput.classList.remove('error');
-          messageInput.classList.remove('error');
-        }, 3000);
-      }, 2000);
-    } else {
-      // Scroll to first error
-      const firstError = document.querySelector('.error-message:not(:empty)');
-      if (firstError) {
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Show inline success notification
+      successMessageEl.textContent = 'Your support request has been submitted successfully.';
+      successMessageEl.style.display = 'block';
+      setTimeout(() => {
+        successMessageEl.style.display = 'none';
+      }, 5000);
+      
+      if (supportForm.tagName === 'FORM') supportForm.reset();
+      else { nameInput.value = ''; emailInput.value = ''; descInput.value = ''; }
+    } catch (err) {
+      console.error('Support submission error:', err);
+      alert(err.message || 'Failed to submit the request. Please try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     }
   });
-
-  // Add CSS for error state
-  const style = document.createElement('style');
-  style.textContent = `
-    .form-group input.error,
-    .form-group textarea.error {
-      border-color: #ff6f61 !important;
-      background: rgba(255, 111, 97, 0.1) !important;
-    }
-  `;
-  document.head.appendChild(style);
 });

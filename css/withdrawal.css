@@ -283,6 +283,7 @@ button[type="submit"] {
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(106, 4, 15, 0.2);
     text-transform: uppercase;
+}
 #withdraw-btn {
     margin-top: 10px;
 }
@@ -500,7 +501,7 @@ button[type="submit"]:disabled {
 @media (max-width: 480px) {
   .dashboard {
     margin: 20px auto 10px;
-    gap: 20px;
+    gap: 5px;
   }
 
   .dashboard-header h1 {
@@ -576,11 +577,11 @@ button[type="submit"]:disabled {
     font-weight: 700;
 }
 
-.withdrawal-item-amount {
-    color: var(--accent) !important;
+.withdrawal-item-amount {       
+    color: var(--accent) !important;  
     font-size: 1.05rem;
-    font-weight: 800;
-}
+    font-weight: 800; 
+} 
 
 .withdrawal-item-status {
     display: inline-block;
@@ -659,5 +660,4 @@ button[type="submit"]:disabled {
     .card p {
         font-size: 0.9rem;
     }
-  }
 }

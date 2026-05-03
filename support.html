@@ -19,6 +19,18 @@
   </script>
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+  <style>
+    /* Ensure clean white background and visibility for input fields */
+    .support-form input,
+    .support-form textarea {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+    }
+    .support-form input::placeholder,
+    .support-form textarea::placeholder {
+      color: #64748b !important;
+    }
+  </style>
 <body>
   <div id="google_translate_element" style="text-align: right; margin: 10px;"></div>
 <header>
@@ -70,6 +82,6 @@
 
   </footer>
 
-  <script src="js/support.js"></script>
+  <script type="module" src="./js/support.js"></script>
 </body>
 </html>
