@@ -30,6 +30,128 @@ document.addEventListener('DOMContentLoaded', async function () {
   const referralCountBadge = document.getElementById('referralCountBadge');
 
   let currentUser = null;
+  let currentProfitBalance = 0;
+
+  // --- PROFIT TRANSFER CARD & MODAL SETUP ---
+  
+  // 1. Create Standalone Trigger Card
+  const transferCard = document.createElement('div');
+  transferCard.className = 'card transfer-profit-card';
+  transferCard.style.cssText = 'cursor: pointer; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;';
+  transferCard.innerHTML = `
+    <div>
+      <h3 style="margin: 0 0 8px; font-size: 1.15rem; color: var(--primary, #1e3a5f);">Transfer Profit</h3>
+      <p style="margin: 0; color: var(--text-secondary, #64748b); font-size: 0.9rem;">Move your earnings securely to your main balance</p>
+    </div>
+    <button style="padding: 10px 20px; background: linear-gradient(135deg, #d1af7e 30%, #6a040f 100%); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; pointer-events: none; white-space: nowrap;">Transfer Now</button>
+  `;
+
+  // STRICT PLACEMENT: Insert safely below the withdrawal card logic
+  if (withdrawBtn) {
+    const withdrawParent = withdrawBtn.closest('.card') || withdrawBtn.parentNode;
+    if (withdrawParent && withdrawParent.parentNode) {
+      withdrawParent.parentNode.insertBefore(transferCard, withdrawParent.nextSibling);
+    }
+  }
+
+  // 2. Create Modal Overlay and Form
+  const transferModal = document.createElement('div');
+  transferModal.id = 'transferProfitModal';
+  transferModal.style.cssText = 'display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease;';
+  transferModal.innerHTML = `
+    <div style="background: var(--card-bg, #ffffff); padding: 32px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.3s ease; position: relative;">
+      <button id="closeTransferModal" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary, #64748b); padding: 4px; line-height: 1;">&times;</button>
+      <h2 style="margin: 0 0 16px; color: var(--primary, #1e3a5f); font-size: 1.4rem;">Transfer Profit</h2>
+      <p style="margin: 0 0 24px; color: var(--text-secondary, #64748b); font-size: 0.95rem;">
+        Available Profit Balance: <strong id="modalProfitDisplay" style="color: var(--success, #10b981);">$0.00</strong>
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <input type="number" id="transferAmountInput" placeholder="Enter amount to transfer" min="0.01" step="0.01" style="width: 100%; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 1rem; color: var(--text-primary, #0f172a); box-sizing: border-box; background: transparent;">
+        <button id="submitTransferBtn" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #d1af7e 30%, #6a040f 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: opacity 0.2s;">Transfer to Balance</button>
+      </div>
+      <p id="transferMsg" style="margin: 16px 0 0; font-size: 0.9rem; font-weight: 500; display: none; text-align: center;"></p>
+    </div>
+  `;
+  document.body.appendChild(transferModal);
+
+  // 3. Modal Interactions & State Management
+  function closeTransferModalHandler() {
+    transferModal.style.opacity = '0';
+    transferModal.querySelector('div').style.transform = 'scale(0.95)';
+    setTimeout(() => transferModal.style.display = 'none', 300);
+  }
+
+  transferCard.addEventListener('click', () => {
+    transferModal.style.display = 'flex';
+    void transferModal.offsetWidth; // Trigger reflow for smooth animation
+    transferModal.style.opacity = '1';
+    transferModal.querySelector('div').style.transform = 'scale(1)';
+    document.getElementById('transferAmountInput').value = '';
+    document.getElementById('transferMsg').style.display = 'none';
+  });
+
+  document.getElementById('closeTransferModal').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeTransferModalHandler();
+  });
+
+  transferModal.addEventListener('click', (e) => {
+    if (e.target === transferModal) closeTransferModalHandler();
+  });
+
+  // 4. RPC Logic & Data Refresh
+  document.getElementById('submitTransferBtn').addEventListener('click', async () => {
+    const inputEl = document.getElementById('transferAmountInput');
+    const msgEl = document.getElementById('transferMsg');
+    const btn = document.getElementById('submitTransferBtn');
+    const amount = parseFloat(inputEl.value);
+
+    msgEl.style.display = 'none';
+
+    // Strict Validation
+    if (!amount || isNaN(amount) || amount <= 0) {
+      msgEl.textContent = 'Please enter a valid amount greater than 0.';
+      msgEl.style.color = 'var(--danger, #ef4444)';
+      msgEl.style.display = 'block';
+      return;
+    }
+    if (amount > currentProfitBalance) {
+      msgEl.textContent = 'Amount exceeds available profit balance.';
+      msgEl.style.color = 'var(--danger, #ef4444)';
+      msgEl.style.display = 'block';
+      return;
+    }
+
+    // Loading State
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+    btn.style.opacity = '0.7';
+
+    try {
+      const { error } = await supabase.rpc('transfer_profit', { amount: amount });
+      if (error) throw error;
+
+      msgEl.textContent = 'Transfer successful!';
+      msgEl.style.color = 'var(--success, #10b981)';
+      msgEl.style.display = 'block';
+      inputEl.value = '';
+
+      // Refetch using pre-existing dashboard function seamlessly
+      await fetchDashboardData();
+
+      // Wait briefly for users to see success message before closing modal
+      setTimeout(closeTransferModalHandler, 1800);
+    } catch (err) {
+      console.error('Transfer Error:', err);
+      msgEl.textContent = err.message || 'Transfer failed. Please try again.';
+      msgEl.style.color = 'var(--danger, #ef4444)';
+      msgEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Transfer to Balance';
+      btn.style.opacity = '1';
+    }
+  });
 
   // --- HELPERS ---
   function formatCurrency(number) {
@@ -105,6 +227,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     balanceValue.textContent = formatCurrency(data.balance);
     profitValue.textContent = formatCurrency(data.profit_balance);
     if (bonusValue) bonusValue.textContent = formatCurrency(data.bonus_balance);
+
+    // Keep modal state tracking synchronized
+    currentProfitBalance = data.profit_balance || 0;
+    const modalProfitDisplay = document.getElementById('modalProfitDisplay');
+    if (modalProfitDisplay) modalProfitDisplay.textContent = formatCurrency(currentProfitBalance);
 
     // 🔥 --- REFERRAL LINK (UPDATED FEATURE) ---
     if (referralCodeInput) {

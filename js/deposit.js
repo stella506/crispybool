@@ -167,6 +167,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // -------------------------------
   // FETCH BALANCES
   // -------------------------------
+  let currentAccountBalance = 0;
+
   async function fetchAndDisplayBalances() {
     const { data, error } = await supabase
       .from('profiles')
@@ -176,11 +178,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (error) return;
 
-    balanceValueEl.textContent = formatCurrency(data.balance || 0);
+    currentAccountBalance = data.balance || 0;
+
+    balanceValueEl.textContent = formatCurrency(currentAccountBalance);
     profitValueEl.textContent = formatCurrency(data.profit_balance || 0);
   }
 
   await fetchAndDisplayBalances();
+
+  // -------------------------------
+  // FUNDING SOURCE SELECTOR (NEW)
+  // -------------------------------
+  let fundingSource = 'external';
+
+  const fundingGroup = document.createElement('div');
+  fundingGroup.className = 'form-group';
+  fundingGroup.innerHTML = `
+    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Funding Source</label>
+    <div style="display: flex; gap: 16px; margin-bottom: 8px;">
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="radio" name="fundingSource" value="external" checked style="width: auto; margin: 0;"> External Deposit
+      </label>
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="radio" name="fundingSource" value="balance" style="width: auto; margin: 0;"> Account Balance
+      </label>
+    </div>
+    <small style="color: var(--text-secondary); font-size: 0.8rem; display: block; margin-bottom: 16px;">Use your account balance to reinvest without external payment.</small>
+  `;
+  depositForm.insertBefore(fundingGroup, depositForm.firstChild);
+
+  function updateUIForFundingSource() {
+    const methodGroup = methodSelect ? methodSelect.closest('.form-group') : null;
+    const txIdInput = document.getElementById('transaction-id');
+    const txIdGroup = txIdInput ? txIdInput.closest('.form-group') : null;
+    
+    // Safely hide wallet container and its wrapper if present
+    let walletGroup = null;
+    if (walletDisplayContainer) {
+      const parentFormGroup = walletDisplayContainer.closest('.form-group');
+      walletGroup = parentFormGroup !== walletDisplayContainer ? parentFormGroup : walletDisplayContainer;
+    }
+
+    if (fundingSource === 'balance') {
+      if (methodGroup) methodGroup.style.display = 'none';
+      if (walletGroup) walletGroup.style.display = 'none';
+      if (txIdGroup) txIdGroup.style.display = 'none';
+      if (submitBtn) submitBtn.textContent = 'Reinvest';
+    } else {
+      if (methodGroup) methodGroup.style.display = '';
+      if (walletGroup) walletGroup.style.display = '';
+      if (txIdGroup) txIdGroup.style.display = '';
+      if (submitBtn) submitBtn.textContent = 'Confirm Deposit';
+    }
+  }
+
+  const fundingRadios = document.querySelectorAll('input[name="fundingSource"]');
+  fundingRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      fundingSource = e.target.value;
+      updateUIForFundingSource();
+      updateProfitDisplay();
+    });
+  });
+
+  // Initial call
+  updateUIForFundingSource();
 
   // -------------------------------
   // PROFIT CALCULATION & INLINE NOTIFICATIONS
@@ -226,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updateProfitDisplay() {
     const amount = parseFloat(amountInput.value);
     const plan = planSelect.value;
-    const method = methodSelect.value;
+    const method = fundingSource === 'external' ? methodSelect.value : 'Account Balance';
     const durationStr = durationSelect.value;
 
     clearTimeout(calculationTimeout);
@@ -237,8 +299,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       calendarContainer.style.display = 'none';
     }
 
-    if (!amount || isNaN(amount) || !plan || !method || !durationStr) {
-      showInlineMessage('Please fill in all fields (Method, Duration, Plan, and Amount) to see your deposit summary.', 'var(--danger)', true);
+    if (!amount || isNaN(amount) || !plan || !durationStr || (fundingSource === 'external' && !methodSelect.value)) {
+      const fieldsMsg = fundingSource === 'external' ? '(Method, Duration, Plan, and Amount)' : '(Duration, Plan, and Amount)';
+      showInlineMessage(`Please fill in all fields ${fieldsMsg} to see your summary.`, 'var(--danger)', true);
+      if (submitBtn) submitBtn.disabled = true;
+      return;
+    }
+
+    if (fundingSource === 'balance' && amount > currentAccountBalance) {
+      showInlineMessage(`Insufficient account balance. You have $${currentAccountBalance.toFixed(2)} available.`, 'var(--danger)', true);
+      if (submitBtn) submitBtn.disabled = true;
       return;
     }
 
@@ -246,8 +316,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (range && (amount < range.min || amount > range.max)) {
       const maxDisplay = range.max === Infinity ? 'unlimited' : `$${range.max}`;
       showInlineMessage(`Amount must be between $${range.min} and ${maxDisplay} as per the selected plan.`, 'var(--danger)', true);
+      if (submitBtn) submitBtn.disabled = true;
       return;
     }
+
+    if (submitBtn) submitBtn.disabled = false;
 
     // Enter "Calculating..." state
     showInlineMessage('Calculating...', 'var(--warning)', false);
@@ -261,7 +334,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
       const durationText = durationNames[duration];
 
-      const summaryText = `You have selected the ${planName} Plan with a ${roi}% daily return. A deposit of $${amount.toFixed(2)} using ${method} for a ${durationText} will yield a total profit of $${totalProfit.toFixed(2)}.`;
+      const actionText = fundingSource === 'external' ? 'deposit' : 'reinvestment';
+      const summaryText = `You have selected the ${planName} Plan with a ${roi}% daily return. A ${actionText} of $${amount.toFixed(2)} using ${method} for a ${durationText} will yield a total profit of $${totalProfit.toFixed(2)}.`;
       
       showInlineMessage(summaryText, 'var(--success)', false);
       
@@ -356,14 +430,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const amount = parseFloat(amountInput.value);
     const plan = planSelect.value;
-    const method = methodSelect.value;
     const durationStr = durationSelect.value;
-    const txId = document.getElementById('transaction-id').value;
 
-    if (!amount || !plan || !method || !txId || !durationStr) {
+    if (!amount || !plan || !durationStr) {
       showNotification('Fill all fields correctly', 'warning');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Deposit';
+      submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
       return;
     }
 
@@ -374,7 +446,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!contractDurationDb) {
       showNotification('Invalid contract duration selected', 'warning');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Deposit';
+      submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
       return;
     }
 
@@ -382,32 +454,78 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (range && (amount < range.min || amount > range.max)) {
       showNotification(`Amount must be between $${range.min} and $${range.max}`, 'warning');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Deposit';
+      submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
       return;
     }
 
-    // -------------------------------
-    // INSERT TRANSACTION
-    // -------------------------------
-    const { error } = await supabase
-      .from('transactions')
-      .insert([{
-        user_id: user.id,
-        type: 'Deposit',
-        amount: amount,
-        method: method,
-        status: 'Pending',
-        tx_id: txId,
-        plan: plan, // Add plan information to transaction
-        contract_duration: contractDurationDb
-      }]);
+    let finalMethod = '';
+    let finalTxId = '';
 
-    if (error) {
-      console.error(error);
-      showNotification('Failed to submit deposit', 'error');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Deposit';
-      return;
+    if (fundingSource === 'external') {
+      const method = methodSelect.value;
+      const txIdInput = document.getElementById('transaction-id');
+      const txId = txIdInput ? txIdInput.value.trim() : '';
+
+      if (!method || !txId) {
+        showNotification('Fill all fields correctly', 'warning');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Deposit';
+        return;
+      }
+      
+      finalMethod = method;
+      finalTxId = txId;
+
+      // -------------------------------
+      // INSERT TRANSACTION
+      // -------------------------------
+      const { error } = await supabase
+        .from('transactions')
+        .insert([{
+          user_id: user.id,
+          type: 'Deposit',
+          amount: amount,
+          method: method,
+          status: 'Pending',
+          tx_id: txId,
+          plan: plan, // Add plan information to transaction
+          contract_duration: contractDurationDb
+        }]);
+
+      if (error) {
+        console.error(error);
+        showNotification('Failed to submit deposit', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Deposit';
+        return;
+      }
+      
+      showNotification('Deposit submitted. Awaiting confirmation.', 'success');
+
+    } else {
+      // REINVESTMENT LOGIC
+      if (amount > currentAccountBalance) {
+        showNotification('Insufficient account balance', 'warning');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reinvest';
+        return;
+      }
+      
+      finalMethod = 'Account Balance';
+      finalTxId = 'REINVEST-' + Date.now();
+
+      const { error } = await supabase.rpc('create_reinvest', { amount: amount });
+
+      if (error) {
+        console.error(error);
+        showNotification(error.message || 'Failed to submit reinvestment', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reinvest';
+        return;
+      }
+
+      showNotification('Reinvestment successful.', 'success');
+      await fetchAndDisplayBalances();
     }
 
     const duration = parseInt(durationStr);
@@ -421,13 +539,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       roi,
       duration,
       profit: totalProfit,
-      method,
-      transactionId: txId
+      method: finalMethod,
+      transactionId: finalTxId
     }));
 
-    showNotification('Deposit submitted. Awaiting confirmation.', 'success');
-
     depositForm.reset();
+    
+    // Reset back to external as default UI state
+    fundingSource = 'external';
+    updateUIForFundingSource();
+
     planCards.forEach(c => c.classList.remove('active'));
     profitDisplayEl.innerHTML = '';
 
