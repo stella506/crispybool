@@ -1,0 +1,41 @@
+[33mcommit 2e00e9a7bc71c1aaaa85ca9f7999c8fab88f21b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Mon May 4 19:24:42 2026 +0100
+
+    transfer card added
+
+[33mcommit 0dfa867d551bbd7fff4f718afcdb7c7ae850bf5c[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Sun May 3 17:52:47 2026 +0100
+
+    withdrawal updated
+
+[33mcommit bbb788f79dc93e0e0e9daf866c2def6c1959c988[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Sun May 3 17:38:07 2026 +0100
+
+    Add feature: withdrawal confirmation page
+
+[33mcommit 385da780a73c1f9147c0bd771255e4389438fa72[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Tue Apr 28 19:13:32 2026 +0100
+
+    Updated UI improvements (inputs, spacing, responsiveness)
+
+[33mcommit 1d5cd88d7690e788b84d6379f01e01e46d5a297f[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Tue Apr 28 16:12:20 2026 +0100
+
+    added a deposit confirmation page and made some changes to the admin page
+
+[33mcommit f7e9077410639c2a44407d26717721d2059401f1[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Mon Apr 27 17:50:11 2026 +0100
+
+    Updated referral system and added transaction activity section
+
+[33mcommit 31df1e4e61d2dc2962552d2c57fa237662abed85[m
+Author: stella cena <stellacena7@gmail.com>
+Date:   Sun Apr 26 21:16:15 2026 +0100
+
+    Initial commit - project setup

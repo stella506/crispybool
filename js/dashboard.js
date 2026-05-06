@@ -137,7 +137,11 @@ document.addEventListener('DOMContentLoaded', async function () {
       inputEl.value = '';
 
       // Refetch using pre-existing dashboard function seamlessly
-      await fetchDashboardData();
+      if (typeof window.refreshInvestments === 'function') {
+        await window.refreshInvestments();
+      } else {
+        await fetchDashboardData();
+      }
 
       // Wait briefly for users to see success message before closing modal
       setTimeout(closeTransferModalHandler, 1800);
@@ -158,9 +162,200 @@ document.addEventListener('DOMContentLoaded', async function () {
     return '$' + Number(number || 0).toFixed(2);
   }
 
+  // Utility function to format numbers as USD currency
+  const formatUSD = (amount) => {
+    // Ensure amount is a valid number
+    const value = Number(amount) || 0;
+    // Format using international standard
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD"
+    }).format(value);
+  };
+
   function generateReferralLink(username) {
     const baseUrl = window.location.origin;
     return `${baseUrl}/crispybool/index.html?ref=${username}`;
+  }
+
+  // --- ACTIVE INVESTMENTS UI HELPERS & STYLES ---
+  const calculateProgress = (start, end) => {
+    const now = new Date();
+    const total = new Date(end) - new Date(start);
+    const elapsed = now - new Date(start);
+    if (total <= 0) return 100;
+    return Math.min(Math.max((elapsed / total) * 100, 0), 100);
+  };
+
+  const getTimeRemaining = (endDate) => {
+    const diff = new Date(endDate) - new Date();
+    if (diff <= 0) return 'Completed';
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days > 0) return `${days} days left`;
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    return `${hours} hrs left`;
+  };
+
+  // Inject modern styles for investment cards
+  if (!document.getElementById('modern-investment-styles')) {
+    const style = document.createElement('style');
+    style.id = 'modern-investment-styles';
+    style.innerHTML = `
+      .modern-investment-card {
+        border-radius: 16px;
+        padding: 20px;
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        color: #ffffff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        margin-bottom: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .modern-investment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      }
+      .modern-inv-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 12px;
+      }
+      .modern-inv-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #f8fafc;
+      }
+      .modern-inv-status {
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.2);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .modern-inv-body {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+      }
+      .modern-inv-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .modern-inv-stat-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+      }
+      .modern-inv-stat-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #f8fafc;
+      }
+      .modern-inv-stat-value.profit {
+        color: #10b981;
+      }
+      .modern-inv-progress-container {
+        margin-top: 4px;
+      }
+      .modern-inv-progress-bar {
+        height: 6px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .modern-inv-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #10b981);
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+      }
+      .modern-inv-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .modern-inv-countdown {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #eab308;
+        font-weight: 600;
+        background: rgba(234, 179, 8, 0.15);
+        padding: 4px 8px;
+        border-radius: 12px;
+      }
+      .modern-inv-empty {
+        text-align: center;
+        padding: 40px 20px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        color: #64748b;
+        font-weight: 500;
+      }
+      /* --- RESPONSIVE FIXES FOR DASHBOARD COMPONENTS --- */
+      .transaction-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 8px;
+      }
+      .transaction-table {
+        width: 100%;
+        min-width: 500px;
+        border-collapse: collapse;
+      }
+      .transaction-table th {
+        text-align: left;
+        padding: 12px;
+        background: rgba(0,0,0,0.02);
+        color: var(--text-secondary, #64748b);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+      .transaction-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border, #e2e8f0);
+        font-size: 0.9rem;
+      }
+      .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .status-success .status-badge { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+      .status-pending .status-badge { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+      .status-failed .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+      
+      @media (max-width: 480px) {
+        .modern-inv-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .modern-inv-status {
+          align-self: flex-start;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   // --- FETCH DASHBOARD DATA ---
@@ -210,6 +405,26 @@ document.addEventListener('DOMContentLoaded', async function () {
       profile.referrals = refError ? [] : referrals;
       profile.referralError = !!refError;
 
+      // 4.5️⃣ ACTIVE INVESTMENTS
+      const { data: investments, error: invError } = await supabase
+        .from('investments')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (invError) {
+        console.error('Investments fetch error:', invError);
+      } else {
+        console.log('Fetched investments:', investments);
+        console.log('Current user:', currentUser.id);
+      }
+
+      // Ensure completed investments are excluded
+      const activeInvestments = (investments || []).filter(inv => (inv.status || '').toLowerCase() === 'active' && inv.completed !== true);
+      profile.investments = invError ? [] : activeInvestments;
+      profile.investmentError = !!invError;
+
       // 5️⃣ UPDATE UI
       updateDashboardUI(profile);
 
@@ -217,6 +432,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       console.error('Dashboard error:', err);
     }
   }
+
+  window.refreshInvestments = fetchDashboardData;
 
   // --- UPDATE UI ---
   function updateDashboardUI(data) {
@@ -283,6 +500,99 @@ document.addEventListener('DOMContentLoaded', async function () {
             </table>
           </div>
         `;
+      }
+    }
+
+    // 🔥 --- ACTIVE INVESTMENTS ---
+    const activeInvestmentsList = document.getElementById('activeInvestmentsList');
+    const totalActiveInvestment = document.getElementById('totalActiveInvestment');
+
+    if (activeInvestmentsList) {
+      if (data.investmentError) {
+        activeInvestmentsList.innerHTML = '<div class="modern-inv-empty" style="color: var(--danger);">Failed to load investments.</div>';
+        if (totalActiveInvestment) totalActiveInvestment.textContent = '';
+      } else if (!data.investments || data.investments.length === 0) {
+        activeInvestmentsList.innerHTML = `
+          <div class="modern-inv-empty">
+            <p style="margin: 0;">No active investments yet</p>
+          </div>
+        `;
+        if (totalActiveInvestment) totalActiveInvestment.textContent = '';
+      } else {
+        let totalAmount = 0;
+        const invHtml = data.investments.map(inv => {
+          const amt = Number(inv.amount || 0);
+          totalAmount += amt;
+          const amtStr = inv.amount == null ? 'Pending data...' : formatUSD(amt);
+          
+          const startDateObj = inv.start_date ? new Date(inv.start_date) : (inv.created_at ? new Date(inv.created_at) : new Date());
+          const startDate = inv.start_date ? new Date(inv.start_date).toLocaleDateString() : (inv.created_at ? startDateObj.toLocaleDateString() : 'Pending data...');
+          const planName = inv.plan ? inv.plan.toUpperCase() : 'UNKNOWN';
+          const durationValue = inv.duration || inv.contract_duration || '0';
+          const durationText = durationValue + ' days';
+          const statusText = inv.status ? inv.status.charAt(0).toUpperCase() + inv.status.slice(1) : 'Active';
+          
+          let durationDays = 0;
+          const durStr = String(inv.duration || inv.contract_duration || '').toLowerCase();
+          if (parseInt(durStr) > 0) durationDays = parseInt(durStr);
+          else if (durStr.includes('daily')) durationDays = 1;
+          else if (durStr.includes('weekly')) durationDays = 7;
+          else if (durStr.includes('monthly')) durationDays = 30;
+
+          let endDateObj;
+          if (inv.end_date) {
+            endDateObj = new Date(inv.end_date);
+          } else if (durationDays > 0 && startDateObj) {
+            endDateObj = new Date(startDateObj);
+            endDateObj.setDate(startDateObj.getDate() + durationDays);
+          } else {
+            endDateObj = new Date(); // Fallback
+          }
+          const endDateStr = endDateObj.toLocaleDateString();
+          
+          const progress = calculateProgress(startDateObj, endDateObj);
+          const timeRemaining = getTimeRemaining(endDateObj);
+          const profitStr = inv.profit > 0 ? formatUSD(inv.profit) : '$0.00';
+          
+          return `
+            <div class="modern-investment-card">
+              <div class="modern-inv-header">
+                <h3>${planName} PLAN</h3>
+                <span class="modern-inv-status">${statusText}</span>
+              </div>
+              
+              <div class="modern-inv-body">
+                <div class="modern-inv-stat">
+                  <span class="modern-inv-stat-label">Amount</span>
+                  <span class="modern-inv-stat-value">${amtStr}</span>
+                </div>
+                <div class="modern-inv-stat">
+                  <span class="modern-inv-stat-label">Profit</span>
+                  <span class="modern-inv-stat-value profit">${profitStr}</span>
+                </div>
+                <div class="modern-inv-stat">
+                  <span class="modern-inv-stat-label">Duration</span>
+                  <span class="modern-inv-stat-value">${durationText}</span>
+                </div>
+              </div>
+
+              <div class="modern-inv-progress-container">
+                <div class="modern-inv-progress-bar">
+                  <div class="modern-inv-progress-fill" style="width: ${progress}%"></div>
+                </div>
+                <div class="modern-inv-footer">
+                  <span>Start: ${startDate}</span>
+                  <span class="modern-inv-countdown">⏱ ${timeRemaining}</span>
+                  <span>End: ${endDateStr}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        activeInvestmentsList.innerHTML = invHtml;
+        if (totalActiveInvestment) {
+          totalActiveInvestment.textContent = `Total Active Investment: ${formatUSD(totalAmount)}`;
+        }
       }
     }
 

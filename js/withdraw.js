@@ -197,19 +197,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalOverlay.style.backdropFilter = 'blur(5px)';
     
     modalOverlay.innerHTML = `
-      <div style="background: var(--card-bg, #fff); padding: 32px; border-radius: 16px; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
-        <h2 style="margin-top: 0; color: var(--primary, #1e3a5f); font-size: 1.5rem; text-align: center;">Security Setup</h2>
+      <div style="background: var(--card-bg, #fff); padding: 24px; border-radius: 16px; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); box-sizing: border-box;">
+        <h2 style="margin-top: 0; color: var(--primary, #1e3a5f); font-size: 1.4rem; text-align: center;">Security Setup</h2>
         <p style="color: var(--text-secondary, #64748b); font-size: 0.95rem; text-align: center; margin-bottom: 24px;">Please set up a 4-digit security PIN before making withdrawals.</p>
         <form id="setPinForm" style="display: flex; flex-direction: column; gap: 16px;">
           <div class="form-group" style="margin:0;">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #0f172a);">Enter PIN</label>
-            <input type="password" id="newPin" maxlength="4" pattern="\\d{4}" required style="width: 100%; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1.1rem; text-align: center; letter-spacing: 5px;" placeholder="••••" autocomplete="new-password">
+            <input type="password" id="newPin" maxlength="4" pattern="\\d{4}" required style="width: 100%; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1.1rem; text-align: center; letter-spacing: 5px; box-sizing: border-box;" placeholder="••••" autocomplete="new-password">
           </div>
           <div class="form-group" style="margin:0;">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary, #0f172a);">Confirm PIN</label>
-            <input type="password" id="confirmPin" maxlength="4" pattern="\\d{4}" required style="width: 100%; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1.1rem; text-align: center; letter-spacing: 5px;" placeholder="••••" autocomplete="new-password">
+            <input type="password" id="confirmPin" maxlength="4" pattern="\\d{4}" required style="width: 100%; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1.1rem; text-align: center; letter-spacing: 5px; box-sizing: border-box;" placeholder="••••" autocomplete="new-password">
           </div>
-          <button type="submit" id="setPinBtn" style="margin-top: 10px; width: 100%; padding: 14px; background: linear-gradient(135deg, #d1af7e 30%, #6a040f 100%); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">Set PIN</button>
+          <button type="submit" id="setPinBtn" style="margin-top: 10px; width: 100%; padding: 14px; background: linear-gradient(135deg, #d1af7e 30%, #6a040f 100%); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-sizing: border-box;">Set PIN</button>
         </form>
       </div>
     `;

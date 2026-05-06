@@ -224,11 +224,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (walletGroup) walletGroup.style.display = 'none';
       if (txIdGroup) txIdGroup.style.display = 'none';
       if (submitBtn) submitBtn.textContent = 'Reinvest';
+
+      // CRITICAL FIX: Remove required and disable to prevent HTML5 validation errors on hidden fields
+      if (methodSelect) { methodSelect.required = false; methodSelect.disabled = true; }
+      if (txIdInput) { txIdInput.required = false; txIdInput.disabled = true; }
     } else {
       if (methodGroup) methodGroup.style.display = '';
       if (walletGroup) walletGroup.style.display = '';
       if (txIdGroup) txIdGroup.style.display = '';
       if (submitBtn) submitBtn.textContent = 'Confirm Deposit';
+
+      // CRITICAL FIX: Restore required and enable fields for external deposit
+      if (methodSelect) { methodSelect.required = true; methodSelect.disabled = false; }
+      if (txIdInput) { txIdInput.required = true; txIdInput.disabled = false; }
     }
   }
 
@@ -432,7 +440,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const plan = planSelect.value;
     const durationStr = durationSelect.value;
 
-    if (!amount || !plan || !durationStr) {
+    if (!plan || !durationStr) {
+      showNotification('Please select plan and duration', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
+      return;
+    }
+
+    if (!amount) {
       showNotification('Fill all fields correctly', 'warning');
       submitBtn.disabled = false;
       submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
@@ -440,8 +455,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Map and validate duration string to DB value
-    const durationMap = { "1": "daily", "7": "weekly", "30": "monthly" };
-    const contractDurationDb = durationMap[durationStr];
+    const stringDurationMap = { "1": "daily", "7": "weekly", "30": "monthly" };
+    const contractDurationDb = stringDurationMap[durationStr];
     
     if (!contractDurationDb) {
       showNotification('Invalid contract duration selected', 'warning');
@@ -449,6 +464,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       submitBtn.textContent = fundingSource === 'external' ? 'Confirm Deposit' : 'Reinvest';
       return;
     }
+
+    const durationMap = {
+      daily: 1,
+      weekly: 7,
+      monthly: 30
+    };
+
+    const durationValue = durationMap[contractDurationDb];
+    const normalizedPlan = plan.toLowerCase();
 
     const range = planRanges[plan];
     if (range && (amount < range.min || amount > range.max)) {
@@ -483,13 +507,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         .from('transactions')
         .insert([{
           user_id: user.id,
-          type: 'Deposit',
-          amount: amount,
+          type: 'deposit',
+          amount: Number(amount),
           method: method,
-          status: 'Pending',
+          status: 'pending',
           tx_id: txId,
-          plan: plan, // Add plan information to transaction
-          contract_duration: contractDurationDb
+          plan: normalizedPlan,
+          duration: durationValue
         }]);
 
       if (error) {
@@ -511,10 +535,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
       
+      const reinvestDurationMap = {
+        daily: 1,
+        weekly: 7,
+        monthly: 30
+      };
+
+      if (!reinvestDurationMap[contractDurationDb]) {
+        showNotification('Invalid duration selected', 'warning');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reinvest';
+        return;
+      }
+
       finalMethod = 'Account Balance';
       finalTxId = 'REINVEST-' + Date.now();
 
-      const { error } = await supabase.rpc('create_reinvest', { amount: amount });
+      console.log({
+        plan: normalizedPlan,
+        durationLabel: contractDurationDb,
+        durationValue: durationValue
+      });
+
+      const { error } = await supabase.rpc('create_reinvest', { 
+        amount: Number(amount),
+        selected_plan: normalizedPlan,
+        selected_duration: durationValue
+      });
 
       if (error) {
         console.error(error);
@@ -524,8 +571,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      showNotification('Reinvestment successful.', 'success');
+      showNotification('Reinvestment request submitted successfully', 'success');
       await fetchAndDisplayBalances();
+      if (typeof window.refreshInvestments === 'function') {
+        window.refreshInvestments();
+      }
+
+      // Clear form and prevent redirecting to confirmation page
+      depositForm.reset();
+      fundingSource = 'external';
+      updateUIForFundingSource();
+      planCards.forEach(c => c.classList.remove('active'));
+      profitDisplayEl.innerHTML = '';
+      if (toggleCalendarBtn) toggleCalendarBtn.style.display = 'none';
+      if (calendarContainer) calendarContainer.style.display = 'none';
+      isCalendarVisible = false;
+      if (toggleCalendarBtn) toggleCalendarBtn.textContent = 'View Earnings Breakdown';
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirm Deposit';
+      return; // Ensure it stays on page to reflect updated balance securely
     }
 
     const duration = parseInt(durationStr);

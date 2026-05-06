@@ -391,6 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           address,
           plan,
           contract_duration,
+          duration,
           created_at,
           user_id,
           profiles!transactions_user_id_fkey (
@@ -467,7 +468,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Type">${tx.type}</td>
         <td data-label="Amount">$${Number(tx.amount).toFixed(2)}</td>
         <td data-label="Plan">${tx.plan || '-'}</td>
-        <td data-label="Duration">${formatDuration(tx.contract_duration)}</td>
+        <td data-label="Duration">${tx.duration ? tx.duration + ' Days' : formatDuration(tx.contract_duration)}</td>
         <td data-label="Method">${tx.method || '-'}</td>
         <td data-label="Address" class="address-col" title="${tx.address || ''}">${tx.address || '-'}</td>
         <td data-label="Status"><span class="status-badge ${statusLower}">${rawStatus}</span></td>
@@ -505,54 +506,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   searchInput?.addEventListener('input', applyFilters);
   statusFilter?.addEventListener('change', applyFilters);
 
-  window.approve = async (id) => {
+  window.approve = async (transactionId) => {
     try {
-      const { data: tx } = await supabase
-        .from('transactions')
-        .select(`*, profiles!transactions_user_id_fkey (balance, profit_balance)`)
-        .eq('id', id)
-        .single();
+      const { error } = await supabase.rpc('approve_transaction', {
+        txn_id: transactionId
+      });
 
-      const statusLower = (tx.status || '').toLowerCase().trim();
-      if (!tx || statusLower !== 'pending') return;
+      if (error) throw error;
 
-      let balance = tx.profiles.balance || 0;
-      let profit = tx.profiles.profit_balance || 0;
-      let updateData = {};
+      alert('Transaction approved successfully');
 
-      if (tx.type.toLowerCase().includes('deposit')) {
-        // Calculate profit based on plan using updated ROI percentages
-        const planRates = {
-          basic: 0.065,     // 6.5%
-          standard: 0.145,  // 14.5%
-          advance: 0.215,   // 21.5% (Matches frontend deposit.js value)
-          advanced: 0.215,  // 21.5% (Alias for safety)
-          premium: 0.285    // 28.5%
-        };
-
-        // Safely normalize plan name to lowercase to prevent case-sensitivity issues
-        const normalizedPlan = (tx.plan || '').toLowerCase().trim();
-
-        // Get correct rate or default to 0 (fail-safe) if unrecognized
-        const profitPercentage = planRates[normalizedPlan] || 0;
-
-        updateData.balance = balance + tx.amount;
-        updateData.profit_balance = profit + (tx.amount * profitPercentage);
-      } else if (tx.type.toLowerCase().includes('withdrawal')) {
-        if (tx.type.toLowerCase().includes('profit')) {
-          if (profit < tx.amount) throw new Error('Insufficient profit balance');
-          updateData.balance = balance;
-          updateData.profit_balance = profit - tx.amount;
-        } else {
-          if (balance < tx.amount) throw new Error('Insufficient balance');
-          updateData.balance = balance - tx.amount;
-          updateData.profit_balance = profit;
-        }
-      }
-
-      await supabase.from('transactions').update({ status: 'Successful' }).eq('id', id);
-      await supabase.from('profiles').update(updateData).eq('id', tx.user_id);
+      // Refresh all relevant data
       fetchTransactions();
+      if (typeof fetchUsers === 'function') fetchUsers();
+      if (typeof fetchDashboard === 'function') fetchDashboard();
+      
+      if (typeof window.refreshInvestments === 'function') {
+        window.refreshInvestments();
+      }
 
     } catch (err) {
       console.error(err);
@@ -560,8 +531,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  window.reject = async (id) => {
-    await supabase.from('transactions').update({ status: 'Failed' }).eq('id', id);
+  window.reject = async (transactionId) => {
+    await supabase.from('transactions').update({ status: 'Failed' }).eq('id', transactionId);
     fetchTransactions();
   };
 
