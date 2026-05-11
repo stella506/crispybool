@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           const statusLower = (tx.status || '').toLowerCase().trim();
           let statusClass = 'status-pending';
           
-          if (statusLower.includes('success')) {
+          if (statusLower.includes('success') || statusLower.includes('approved') || statusLower.includes('completed')) {
             statusClass = 'status-success';
           } else if (statusLower.includes('fail') || statusLower.includes('cancel') || statusLower.includes('rejected')) {
             statusClass = 'status-failed';

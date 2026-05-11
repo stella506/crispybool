@@ -239,6 +239,30 @@
     gap: 15px;
   }
 
+  .dashboard .crypto-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding-bottom: 10px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .dashboard .crypto-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dashboard .crypto-card {
+    min-width: 230px !important;
+    flex: 0 0 auto !important;
+    scroll-snap-align: center !important;
+  }
+
   .crypto-card {
     padding: 16px;
     gap: 10px;

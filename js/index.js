@@ -147,20 +147,70 @@ document.addEventListener('DOMContentLoaded', function() {
   const feedContainer = document.getElementById('activity-feed');
   if (!feedContainer) return;
 
-  const firstNames = ["John", "Emily", "Michael", "Sarah", "David", "Jessica", "Chris", "Laura", "James", "Linda", "Robert", "Maria", "Daniel", "Susan", "William", "Karen", "Omar", "Aisha", "Kenji", "Mei", "sophia", "liam", "olivia", "noah", "emma", "ava", "isabella", "lucas", "mia", "ethan", "amelia"];
-  const lastNames = ["S.", "J.", "W.", "B.", "G.", "M.", "D.", "R.", "H.", "L.", "P.", "K."];
-  const MAX_ITEMS = 12;
+  const namesPool = [
+    // Realistic English/Western Names (Full)
+    "John Smith", "David Wilson", "Michael Carter", "Sarah Brown", "Emma Thompson", "Daniel Scott", "Olivia Brown", "James Harris", "William Davis", "Emily Johnson", "Christopher White", "Megan Taylor", "Matthew Anderson", "Amanda Martinez", "Joshua Thomas", "Ashley Jackson", "Andrew White", "Brian Harris", "Kevin Martin", "Steven Thompson", "Timothy Garcia", "Jason Martinez", "Ryan Robinson", "Jacob Clark", "Gary Rodriguez", "Nicholas Lewis", "Eric Lee", "Stephen Walker", "Jonathan Hall", "Larry Allen", "Justin Young", "Scott Hernandez", "Brandon King", "Benjamin Wright", "Samuel Lopez", "Gregory Hill", "Frank Scott", "Alexander Green", "Patrick Adams", "Raymond Baker", "Jack Gonzalez", "Dennis Nelson", "Jerry Carter", "Tyler Mitchell", "Aaron Perez",
+    
+    // Realistic English/Western Names (Initials)
+    "John D.", "Michael C.", "Sarah M.", "David W.", "Emma T.", "James R.", "Daniel S.", "Sophia L.", "William H.", "Olivia B.", "Chris W.", "Megan T.", "Matt A.", "Amanda M.", "Josh T.", "Ashley J.", "Andrew W.", "Brian H.", "Kevin M.", "Steve T.", "Tim G.", "Jason M.", "Ryan R.", "Jacob C.", "Gary R.", "Nick L.", "Eric L.", "Stephen W.", "Jon H.", "Larry A.", "Justin Y.", "Scott H.", "Brandon K.", "Ben W.", "Sam L.", "Greg H.", "Frank S.", "Alex G.", "Pat A.", "Ray B.", "Jack G.", "Dennis N.", "Jerry C.", "Tyler M.", "Aaron P.",
+
+    // Realistic English/Western Names (Short)
+    "Dave W.", "Mike C.", "Sarah B.", "Em T.", "Dan S.", "Liv B.", "Jim H.", "Will D.", "Emily J.", "Chris W.", "Meg T.", "Matt A.", "Amy M.", "Josh T.", "Ash J.", "Andy W.", "Bri H.", "Kev M.", "Steve T.", "Tim G.", "Jay M.", "Ry R.", "Jake C.", "Gary R.", "Nick L.", "Ric L.", "Steph W.", "Jon H.", "Lar A.", "Just Y.", "Scot H.", "Bran K.", "Ben W.", "Sam L.", "Greg H.", "Frank S.", "Alex G.", "Pat A.", "Ray B.", "Jack G.", "Den N.",
+
+    // International Names (Full)
+    "Chen Wei", "Hiro Tanaka", "Fatima Noor", "Carlos Mendes", "Luka Petrovic", "Ahmed Khalid", "Priya Sharma", "Ibrahim Musa", "Elena Petrova", "Kwame Mensah", "Sofia Alvarez", "Adeyemi Adeleke", "Yuki Sato", "Muhammad Ali", "Wei Chen", "Aisha Rahman", "Diego Rossi", "Katarina Novak", "Lars Müller", "Jin Soo", "Mei Ling", "Omar Farooq", "Anastasia Ivanova", "Giovanni Bianchi", "Nia Okafor", "Tariq Al-Fayed", "Min-Ji Kim", "Javier Morales", "Svetlana Popova", "Kofi Annan",
+    
+    // International Names (Initials)
+    "Adeyemi A.", "Chen W.", "Hiro T.", "Fatima N.", "Carlos M.", "Luka P.", "Ahmed K.", "Priya S.", "Ibrahim M.", "Elena P.", "Kwame M.", "Sofia A.", "Yuki S.", "Muhammad A.", "Wei C.", "Aisha R.", "Diego R.", "Katarina N.", "Lars M.", "Jin S.", "Mei L.", "Omar F.", "Anastasia I.", "Giovanni B.", "Nia O.", "Tariq A.", "Min-Ji K.", "Javier M.", "Svetlana P.", "Kofi A.",
+
+    // Limited Usernames/Aliases
+    "CryptoAce", "PrimeVest", "AlphaTrade", "WealthPoint", "NexusCapital", "ApexInvest", "GlobalTrade", "SecureFund", "TitanWealth", "ZenithAssets", "YieldMaster", "CapGrow", "EquiPro", "VisionTrade", "VertexCapital"
+  ];
+  let nameIndex = 0;
+  const MAX_ITEMS = 160;
+
+  // Shuffle names randomly on load to ensure organic global diversity
+  for (let i = namesPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [namesPool[i], namesPool[j]] = [namesPool[j], namesPool[i]];
+  }
 
   function getRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  function generateName() {
+    const name = namesPool[nameIndex];
+    nameIndex = (nameIndex + 1) % namesPool.length;
+    return name;
+  }
+
   function generateRandomActivity() {
-    const type = Math.random() > 0.3 ? 'Deposit' : 'Withdrawal'; // 70% chance of deposit
-    const name = `${getRandomItem(firstNames)} ${getRandomItem(lastNames)}`;
-    const amount = (type === 'Deposit')
-      ? Math.floor(Math.random() * (12000 - 150 + 1)) + 150
-      : Math.floor(Math.random() * (5000 - 50 + 1)) + 50;
+    const type = Math.random() > 0.4 ? 'Deposit' : 'Withdrawal'; // 60% chance of deposit
+    const name = generateName();
+    let amount;
+    if (type === 'Deposit') {
+      const rand = Math.random();
+      if (rand < 0.3) {
+        // Low: $100 - $4,999
+        amount = Math.floor(Math.random() * (4999 - 100 + 1)) + 100;
+      } else if (rand < 0.8) {
+        // Mid: $5,000 - $30,000
+        amount = Math.floor(Math.random() * (30000 - 5000 + 1)) + 5000;
+      } else {
+        // High: $40,000 - $100,000
+        amount = Math.floor(Math.random() * (100000 - 40000 + 1)) + 40000;
+      }
+    } else {
+      const rand = Math.random();
+      if (rand < 0.4) {
+        // Low: $10 - $4,999
+        amount = Math.floor(Math.random() * (4999 - 10 + 1)) + 10;
+      } else {
+        // High: $5,000 - $20,000
+        amount = Math.floor(Math.random() * (20000 - 5000 + 1)) + 5000;
+      }
+    }
 
     return { type, name, amount };
   }
@@ -199,6 +249,23 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(addActivity, randomInterval);
   }
 
-  // Kick off the simulation after a brief delay
-  setTimeout(addActivity, 1500);
+  // Pre-fill function to instantly establish the massive multi-column architecture
+  function initFeed() {
+    const INITIAL_COUNT = 32; // Fills approximately 7-8 rows of grid space
+    for (let i = 0; i < INITIAL_COUNT; i++) {
+      const activityData = generateRandomActivity();
+      const newElement = createActivityElement(activityData);
+      
+      // Bypass entrance animations for initial structural load
+      newElement.style.animation = 'none';
+      newElement.style.opacity = '1';
+      newElement.style.transform = 'translateX(0)';
+      
+      feedContainer.appendChild(newElement);
+    }
+    setTimeout(addActivity, 2500); // Resume top-update animation loop
+  }
+
+  // Kick off the simulation immediately
+  setTimeout(initFeed, 200);
 });

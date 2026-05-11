@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       // Determine Status Badges
       const s = statusText.toLowerCase();
-      if (s.includes('success')) statusClass = 'status-success';
+      if (s.includes('success') || s.includes('approved') || s.includes('completed')) statusClass = 'status-success';
       else if (s.includes('fail') || s.includes('cancel') || s.includes('reject')) statusClass = 'status-failed';
       else if (s.includes('pending')) statusClass = 'status-pending';
 
