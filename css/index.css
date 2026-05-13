@@ -308,12 +308,16 @@ body {
 ================================== */
 .what-we-do {
   background: linear-gradient(135deg, #352816 30%, #6a040f 100%);
-  padding: 40px 5%;
+  padding: 50px 5%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  grid-auto-rows: minmax(320px, auto);
+  gap: 40px;
+  justify-content: center;
+  align-items: start;
+  max-width: 1240px;
+  margin: 0 auto;
   position: relative;
-  margin: 0;
   overflow: hidden;
 }
 
@@ -347,6 +351,10 @@ body {
   opacity: 0;
   transform: translateY(50px) scale(0.95);
   animation: none; /* Remove old animation */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 360px;
 }
 
 .what-we-do .feature::before {

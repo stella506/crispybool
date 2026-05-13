@@ -253,6 +253,26 @@ button[type="submit"] {
   .personal-details {
     padding: 28px 20px;
   }
+}
+
+.auth-footer {
+  text-align: center;
+  padding: 18px 16px 22px;
+  color: rgba(55, 65, 81, 0.75);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: transparent;
+}
+
+@media (max-width: 480px) {
+  .registration-form {
+    padding: 30px 3%;
+  }
+
+  .personal-details {
+    padding: 28px 20px;
+  }
 
   .login-header h2 {
     font-size: 28px;

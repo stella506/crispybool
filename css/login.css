@@ -227,6 +227,16 @@ button[type="submit"] {
   }
 }
 
+.auth-footer {
+  text-align: center;
+  padding: 18px 16px 22px;
+  color: rgba(55, 65, 81, 0.75);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: transparent;
+}
+
 @media (max-width: 480px) {
   .login-main {
     padding: 20px 10px;
