@@ -138,10 +138,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const networkWarnings = {
-    BTC: "Send only BTC to the above address",
-    ETH: "Send only ETH (ERC20 compatible networks not supported here)",
-    BNB: "Send only BNB (BEP20)",
-    USDT: "Send only USDT (ERC20)"
+    BTC: "Deposit only BTC to the above address",
+    ETH: "Deposit only ETH (ERC20 compatible networks not supported here)",
+    BNB: "Deposit only BNB (BEP20)",
+    USDT: "Deposit only USDT (ERC20)"
   };
 
   const planRanges = {
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const dailyProfit = amount * (roi / 100);
       const totalProfit = dailyProfit * duration;
       
-      const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
+      const planName = plan.toLowerCase().trim() === 'advance' ? 'Advanced' : plan.charAt(0).toUpperCase() + plan.slice(1);
       const durationText = durationNames[duration];
 
       const actionText = fundingSource === 'external' ? 'deposit' : 'reinvestment';
@@ -397,8 +397,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const warning = networkWarnings[coin];
         walletDisplayContainer.innerHTML = `
             <div class="deposit-address">
-                <p id="walletAddress">${address}</p>
-                <button id="copyWalletBtn" class="copy-btn" type="button">Copy</button>
+                <p id="walletAddress" translate="no" class="notranslate">${address}</p>
+                <button id="copyWalletBtn" class="copy-btn notranslate" translate="no" type="button" data-address="${address}">Copy</button>
             </div>
             <p class="network-warning-text">${warning}</p>
         `;
@@ -409,17 +409,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   methodSelect.addEventListener('change', () => updateWalletAddress(methodSelect.value));
 
-  walletDisplayContainer.addEventListener('click', (e) => {
-    if (e.target && e.target.id === 'copyWalletBtn') {
-        const addressEl = document.getElementById('walletAddress');
-        if (addressEl) {
-            navigator.clipboard.writeText(addressEl.textContent).then(() => {
-                e.target.textContent = 'Copied!';
-                setTimeout(() => { e.target.textContent = 'Copy'; }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                showNotification('Failed to copy address', 'error');
-            });
+  walletDisplayContainer.addEventListener('click', async (e) => {
+    // Use closest() to guarantee we find the button even if translation wraps its text in a <font> or <span> tag
+    const copyBtn = e.target.closest('#copyWalletBtn');
+    
+    if (copyBtn) {
+        // Pull from stable HTML dataset attribute instead of fragile DOM textContent
+        const addressToCopy = copyBtn.dataset.address;
+        if (!addressToCopy) return;
+        
+        try {
+            // 1. Primary approach: Modern Async Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(addressToCopy);
+            } else {
+                // 2. Fallback approach: ExecCommand for older mobile browsers or non-HTTPS local testing
+                const textArea = document.createElement("textarea");
+                textArea.value = addressToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                const successful = document.execCommand('copy');
+                textArea.remove();
+                if (!successful) throw new Error('execCommand fallback failed');
+            }
+            
+            // Update button text safely without relying on e.target directly
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+            
+        } catch (err) {
+            console.error('Clipboard copy failed: ', err);
+            showNotification('Failed to copy address', 'error');
         }
     }
   });
@@ -472,7 +497,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const durationValue = durationMap[contractDurationDb];
-    const normalizedPlan = plan.toLowerCase();
+    let normalizedPlan = plan.toLowerCase().trim();
+    if (normalizedPlan === 'advance') {
+      normalizedPlan = 'advanced';
+    }
 
     const range = planRanges[plan];
     if (range && (amount < range.min || amount > range.max)) {
@@ -599,7 +627,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const totalProfit = dailyProfit * duration;
 
     sessionStorage.setItem('depositDetails', JSON.stringify({
-      plan,
+      plan: normalizedPlan,
       amount,
       roi,
       duration,
