@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   function generateReferralLink(username) {
     const baseUrl = window.location.origin;
-    return `${baseUrl}/crispybool/index.html?ref=${username}`;
+    return `${baseUrl}/index.html?ref=${username}`;
   }
 
   // --- ACTIVE INVESTMENTS UI HELPERS & STYLES ---
