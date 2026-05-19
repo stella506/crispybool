@@ -11,9 +11,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     /* FIX: Ensure chat UI stays strictly above all dashboard elements */
     #chatToggle {
       z-index: 99999 !important;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease !important;
+    }
+    #chatToggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
     }
     #chatContainer {
       z-index: 99999 !important;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease !important;
+      transform-origin: bottom right;
+      flex-direction: column !important;
+      overflow: hidden !important; /* Prevents invisible overflow from pushing layout */
+    }
+    #chatContainer.hidden {
+      opacity: 0 !important;
+      transform: scale(0.95) translateY(20px) !important;
+      pointer-events: none !important;
+    }
+    #chatContainer.open {
+      opacity: 1 !important;
+      transform: scale(1) translateY(0) !important;
+      pointer-events: auto !important;
     }
     .message-footer {
       display: flex;
@@ -50,6 +69,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       align-items: stretch !important; /* CRITICAL FIX: Forces rows to 100% width, killing centering */
       width: 100% !important;
       box-sizing: border-box !important;
+      flex: 1 1 auto !important; /* CRITICAL FIX: Grows to fill all available space */
+      overflow-y: auto !important; /* Contains scrolling strictly to the message list */
+      min-height: 0 !important; /* Flexbox stability rule to prevent layout blowout */
+      margin-bottom: 0 !important;
+      max-height: none !important; /* CRITICAL FIX: Kill legacy max-height that caused massive bottom whitespace */
+    }
+    .chat-header, .chat-input {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
     /* AVATAR SYSTEM STYLES */
     .message-row {
@@ -123,21 +151,183 @@ document.addEventListener("DOMContentLoaded", async () => {
       color: rgba(0, 0, 0, 0.5);
     }
     .chat-input button#attachBtn {
-      background: transparent;
-      color: #111;
-      padding: 10px;
-      font-size: 18px;
+      background: #f1f5f9 !important;
+      color: #475569 !important;
+      font-size: 18px !important;
+      box-shadow: none !important;
+    }
+    .chat-input button#attachBtn:hover {
+      background: #e2e8f0 !important;
+      color: #1e3a5f !important;
+      transform: translateY(-2px) !important;
     }
     #fileIndicator {
-      font-size: 0.75rem;
-      padding: 6px 12px;
-      color: #666;
-      background: #f9f9f9;
-      border-top: 1px solid #eee;
+      font-size: 0.8rem;
+      padding: 8px 16px;
+      color: #1e3a5f;
+      background: #f0f7ff;
+      border-top: 1px solid #e2e8f0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       display: none;
+      font-weight: 500;
+    }
+    
+    /* =======================================================
+       MOBILE CHATBOX OPTIMIZATION (Fixed Viewport 1280px)
+       ======================================================= */
+    body.mobile-chat-mode #chatToggle {
+      width: 170px !important;
+      height: 170px !important;
+      bottom: 60px !important;
+      right: 5vw !important;
+      font-size: 80px !important;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+    }
+
+    body.mobile-chat-mode #chatBadge {
+      width: 54px !important;
+      height: 54px !important;
+      font-size: 32px !important;
+      top: -5px !important;
+      right: -5px !important;
+      border: 6px solid #fff !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    body.mobile-chat-mode #chatContainer {
+      width: 90vw !important;
+      height: 1800px !important; /* Fallback */
+      height: 82vh !important;
+      max-height: 2400px !important;
+      
+      right: 5vw !important;
+      border-radius: 40px !important;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3) !important;
+      display: none !important; /* Managed by JS */
+    }
+    
+    body.mobile-chat-mode #chatContainer.open {
+      display: flex !important;
+    }
+
+    body.mobile-chat-mode .chat-header {
+      padding: 40px 50px !important;
+      font-size: 50px !important;
+      border-top-left-radius: 40px !important;
+      border-top-right-radius: 40px !important;
+      min-height: 140px !important;
+    }
+
+    body.mobile-chat-mode .chat-header button {
+      font-size: 60px !important;
+      width: 80px !important;
+      height: 80px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    body.mobile-chat-mode #expandChatBtn {
+      display: none !important; /* Already maximized for mobile */
+    }
+
+    body.mobile-chat-mode .chat-messages {
+      padding: 50px !important;
+      gap: 36px !important;
+    }
+
+    body.mobile-chat-mode .message-row {
+      margin-bottom: 40px !important;
+      gap: 24px !important;
+    }
+
+    body.mobile-chat-mode .chat-avatar {
+      width: 100px !important;
+      height: 100px !important;
+      font-size: 48px !important;
+      border-radius: 50% !important;
+    }
+
+    body.mobile-chat-mode .message {
+      font-size: 48px !important;
+      padding: 34px 44px !important;
+      border-radius: 36px !important;
+      max-width: 82% !important;
+      line-height: 1.5 !important;
+    }
+
+    body.mobile-chat-mode .message.user {
+      border-bottom-right-radius: 12px !important;
+    }
+
+    body.mobile-chat-mode .message.admin {
+      border-bottom-left-radius: 12px !important;
+    }
+
+    body.mobile-chat-mode .message-footer {
+      font-size: 30px !important;
+      margin-top: 16px !important;
+      gap: 12px !important;
+    }
+
+    body.mobile-chat-mode .chat-input {
+      padding: 30px 40px !important;
+      gap: 24px !important;
+      border-bottom-left-radius: 40px !important;
+      border-bottom-right-radius: 40px !important;
+      min-height: 160px !important;
+      border-top: 2px solid rgba(0, 0, 0, 0.06) !important;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    body.mobile-chat-mode #messageInput {
+      font-size: 46px !important;
+      padding: 24px 36px !important;
+      border-radius: 60px !important;
+      height: 120px !important;
+      border: 2px solid #e2e8f0 !important;
+    }
+
+    body.mobile-chat-mode #sendBtn,
+    body.mobile-chat-mode #attachBtn {
+      font-size: 50px !important;
+      width: 120px !important;
+      height: 120px !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      min-width: auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    body.mobile-chat-mode #fileIndicator {
+      font-size: 36px !important;
+      padding: 20px 50px !important;
+    }
+
+    body.mobile-chat-mode .login-prompt {
+      padding: 60px !important;
+      font-size: 48px !important;
+    }
+
+    body.mobile-chat-mode .login-prompt button {
+      font-size: 46px !important;
+      padding: 30px 60px !important;
+      border-radius: 24px !important;
+      margin-top: 40px !important;
+    }
+    
+    body.mobile-chat-mode .empty-chat-state {
+      font-size: 46px !important;
     }
   `;
   document.head.appendChild(chatStyles);
@@ -167,8 +357,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     attachBtn.title = "Attach file or image";
     attachBtn.onclick = () => fileInput.click();
 
-    input.parentNode.insertBefore(attachBtn, sendBtn);
-    input.parentNode.insertBefore(fileInput, sendBtn);
+    input.parentNode.insertBefore(attachBtn, input);
+    input.parentNode.insertBefore(fileInput, input);
 
     fileIndicator = document.createElement("div");
     fileIndicator.id = "fileIndicator";
@@ -235,6 +425,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   chatContainer.style.display = "none";
 
   /* =========================
+     MOBILE OPTIMIZATION LOGIC
+  ========================== */
+  function applyMobileChatOptimization() {
+    // Detect physical mobile screen width independent of the fixed 1280px viewport
+    const isMobileDevice = window.screen.width <= 1024 || window.innerWidth < 1024;
+    const isFixedViewport = document.querySelector('meta[name="viewport"]')?.content.includes('width=1280');
+    
+    if (isMobileDevice && isFixedViewport) {
+      document.body.classList.add('mobile-chat-mode');
+    } else {
+      document.body.classList.remove('mobile-chat-mode');
+    }
+  }
+  applyMobileChatOptimization();
+  window.addEventListener('resize', applyMobileChatOptimization);
+  window.addEventListener('orientationchange', applyMobileChatOptimization);
+
+  /* =========================
      AUTH SESSION
   ========================== */
   const { data: { session } } = await supabase.auth.getSession();
@@ -272,8 +480,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   function toggleChat(open) {
     if (open) {
       chatContainer.style.display = "flex";
-      chatContainer.classList.add("open");
       chatContainer.classList.remove("hidden");
+      
+      // Force reflow for CSS transitions to trigger smoothly
+      void chatContainer.offsetWidth;
+      chatContainer.classList.add("open");
 
       if (!isLoggedIn) {
         showLoginPrompt();
@@ -283,7 +494,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       markMessagesRead();
 
       setTimeout(() => {
-        input.focus();
+        if (!document.body.classList.contains('mobile-chat-mode')) {
+          input.focus(); // Prevent keyboard from popping up automatically on mobile
+        }
+        
         // Ensure scroll to bottom when opening
         messagesDiv.scrollTo({
           top: messagesDiv.scrollHeight,
@@ -292,12 +506,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }, 100);
 
     } else {
-      chatContainer.style.display = "none";
       chatContainer.classList.remove("open");
-      chatContainer.classList.add("hidden");
+      
       if (chatContainer.classList.contains("expanded")) {
         document.body.style.overflow = ""; // Clean up scroll lock if closed while expanded
       }
+
+      // Wait for CSS transition to finish before applying display: none
+      setTimeout(() => {
+        chatContainer.style.display = "none";
+        chatContainer.classList.add("hidden");
+      }, 400);
     }
   }
 

@@ -147,37 +147,48 @@ button:disabled {
 .deposit-address {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: linear-gradient(135deg, var(--background) 0%, #f5f8ff 100%);
-    padding: 14px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
+    gap: 16px;
+    background: #ffffff;
+    padding: 20px 24px;
+    border-radius: 12px;
+    border: 2px dashed #94a3b8;
+    margin-bottom: 16px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), inset 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.deposit-address:hover, .deposit-address:focus-within {
+    border-color: var(--primary);
+    background: #f8fafc;
 }
 
 .deposit-address p {
     margin: 0;
-    font-size: 0.8rem;
-    color: var(--text-primary);
-    font-weight: 600;
+    font-size: clamp(1rem, 1.2vw + 0.5rem, 1.25rem);
+    color: var(--primary);
+    font-weight: 700;
     flex: 1;
-    font-family: 'Courier New', monospace;
+    font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
     word-break: break-all;
+    letter-spacing: 0.75px;
+    line-height: 1.5;
+    user-select: all;
 }
 
 .copy-btn {
-    padding: 8px 16px;
+    padding: 12px 24px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     color: #fff;
     white-space: nowrap;
-    font-size: 0.85rem;
-    box-shadow: 0 2px 8px rgba(30, 58, 95, 0.2);
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.15);
 }
 
 .copy-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+    box-shadow: 0 6px 16px rgba(30, 58, 95, 0.25);
 }
 
 .recommended-badge {
@@ -198,13 +209,14 @@ button:disabled {
 }
 
 .deposit-address-placeholder {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--text-secondary);
     text-align: center;
-    padding: 20px;
-    background: var(--background);
-    border-radius: 8px;
-    border: 1px dashed var(--border);
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #cbd5e1;
+    font-weight: 500;
 }
 
 
@@ -321,17 +333,13 @@ button:disabled {
     }
 
     .deposit-address {
-        padding: 12px 14px;
-        gap: 8px;
-    }
-
-    .deposit-address p {
-        font-size: 0.75rem;
+        padding: 16px;
+        gap: 12px;
     }
 
     .copy-btn {
-        padding: 10px 16px; /* FIX: Larger touch target for mobile thumbs */
-        font-size: 0.9rem; /* FIX: Improved readability */
+        padding: 12px 16px; /* FIX: Larger touch target for mobile thumbs */
+        font-size: 0.95rem; /* FIX: Improved readability */
         min-height: 44px;
     }
 }
