@@ -391,6 +391,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   // -------------------------------
   // DYNAMIC WALLET ADDRESS & COPY
   // -------------------------------
+
+  /**
+   * Generates a QR code for the provided wallet address.
+   * Clears any existing QR instances before rendering a new one.
+   */
+  function generateQR(address) {
+    const qrContainer = document.getElementById('walletQrCode');
+    if (!qrContainer) return;
+    
+    // Clear existing QR code to prevent duplicate appends
+    qrContainer.innerHTML = '';
+    
+    if (!address) return;
+    
+    try {
+      new QRCode(qrContainer, {
+        text: address,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch (err) {
+      console.warn('Failed to generate QR code for address:', address, err);
+    }
+  }
+
   function updateWalletAddress(coin) {
     if (coin && walletAddresses[coin]) {
         const address = walletAddresses[coin];
@@ -400,8 +428,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p id="walletAddress" translate="no" class="notranslate">${address}</p>
                 <button id="copyWalletBtn" class="copy-btn notranslate" translate="no" type="button" data-address="${address}">Copy</button>
             </div>
+            <div id="walletQrCode" class="qr-code-container"></div>
             <p class="network-warning-text">${warning}</p>
         `;
+        generateQR(address);
     } else {
         walletDisplayContainer.innerHTML = `<p class="deposit-address-placeholder">Select a coin to view deposit address</p>`;
     }

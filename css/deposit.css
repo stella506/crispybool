@@ -196,6 +196,24 @@ button:disabled {
 }
 
 /* ===============================
+   QR CODE STYLES
+================================== */
+.qr-code-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0;
+    width: 100%;
+}
+
+.qr-code-container img, .qr-code-container canvas {
+    border-radius: 8px;
+    padding: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
    DYNAMIC WALLET ADDRESS STYLES
 ================================== */
 .network-warning-text {
