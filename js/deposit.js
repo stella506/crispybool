@@ -134,14 +134,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     BTC: "bc1q4yyz5gpsyqsgxnm7ec2llngafa374z9a8yuxlm",
     ETH: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
     BNB: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
-    USDT: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7"
+    USDT: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
+    USDT_TRC20: "TBd4YVYSQveLvL4toXBKs8nu3A88XQnMQn"
   };
 
   const networkWarnings = {
     BTC: "Deposit only BTC to the above address",
     ETH: "Deposit only ETH (ERC20 compatible networks not supported here)",
     BNB: "Deposit only BNB (BEP20)",
-    USDT: "Deposit only USDT (ERC20)"
+    USDT: "Deposit only USDT (ERC20)",
+    USDT_TRC20: "Deposit only USDT (TRC20)"
   };
 
   const planRanges = {

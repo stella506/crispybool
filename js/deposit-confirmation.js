@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         BTC: "bc1q4yyz5gpsyqsgxnm7ec2llngafa374z9a8yuxlm",
         ETH: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
         BNB: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
-        USDT: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7"
+        USDT: "0x4ed7728b43c5623c580e6b06ee1c959af4a177f7",
+        USDT_TRC20: "TBd4YVYSQveLvL4toXBKs8nu3A88XQnMQn"
     };
 
     function truncateString(str, startChars, endChars) {
